@@ -1,8 +1,10 @@
 export const mapUserData = (user) => {
-  const { uid, email, xa } = user
-  return {
-    id: uid,
-    email,
-    token: xa,
-  }
+    const { email, displayName, photoURL, uid, xa } = user
+    return {
+        email,
+        name: displayName,
+        photoURL,
+        id: uid,
+        token: xa,
+    }
 }

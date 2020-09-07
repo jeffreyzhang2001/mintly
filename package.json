@@ -7,6 +7,11 @@
     "start": "next start"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/free-brands-svg-icons": "^5.14.0",
+    "@fortawesome/free-regular-svg-icons": "^5.14.0",
+    "@fortawesome/free-solid-svg-icons": "^5.14.0",
+    "@fortawesome/react-fontawesome": "^0.1.11",
     "firebase": "^7.15.5",
     "firebase-admin": "^8.12.1",
     "js-cookie": "2.2.1",
@@ -14,7 +19,15 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-firebaseui": "4.1.0",
+    "react-twemoji": "^0.3.0",
     "swr": "0.2.3"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^7.8.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.6",
+    "prettier": "^2.1.1"
+  }
 }
