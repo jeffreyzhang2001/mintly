@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { useUser } from '../../utils/auth/useUser'
+
+import { Button } from 'antd'
 import Twemoji from 'react-twemoji'
 
 const Header = () => {
@@ -18,7 +20,14 @@ const Header = () => {
                 </>
             ) : (
                 <>
-                    <a href="/login">Login</a>
+                    <Link href={'/login'}>
+                        <p>Log In</p>
+                    </Link>
+                    <Link href={'/login'}>
+                        <Button type="primary" shape="round">
+                            Sign Up
+                        </Button>
+                    </Link>
                 </>
             )}
 

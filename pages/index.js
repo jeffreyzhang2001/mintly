@@ -2,6 +2,8 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useUser } from '../utils/auth/useUser'
 
+import { Button } from 'antd'
+import TextLoop from 'react-text-loop'
 import Twemoji from 'react-twemoji'
 
 const Index = () => {
@@ -11,25 +13,35 @@ const Index = () => {
         <div className="container">
             <Head>
                 <title>Mintly</title>
-                <link
-                    rel="icon"
-                    href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/twitter/248/leaf-fluttering-in-wind_1f343.png"
-                />
             </Head>
 
             <main>
                 <h1 className="title">Mintly</h1>
-                <p className="description">Paper trading, simplified.</p>
-                {user ? (
-                    <Link href="/dashboard">
-                        <a>Dashboard</a>
-                    </Link>
-                ) : (
-                    <Link href={'/login'}>
-                        <a>Get Started</a>
-                    </Link>
-                )}
-                <Twemoji options={{ className: 'emoji' }}>🍃</Twemoji>
+                <div className="description">
+                    <p>Paper trading, supercharged.</p>
+                    <TextLoop interval={2000} mask={true}>
+                        <span>Completely free, forever.</span>
+                        <span>Real-time market data.</span>
+                        <span>Trade options stress-free.</span>
+                        <span>Manage multiple portfolios.</span>
+                    </TextLoop>
+                </div>
+                <div className="btn-container">
+                    {user ? (
+                        <Link href="/dashboard">
+                            <Button type="primary" shape="round" size="large">
+                                Dashboard
+                            </Button>
+                        </Link>
+                    ) : (
+                        <Link href={'/login'}>
+                            <Button type="primary" shape="round" size="large">
+                                Get Started
+                            </Button>
+                        </Link>
+                    )}
+                </div>
+                {/* <Twemoji options={{ className: 'emoji' }}>🍃</Twemoji> */}
             </main>
 
             <style jsx>{`
@@ -50,9 +62,8 @@ const Index = () => {
                     align-items: center;
                 }
 
-                a {
-                    color: inherit;
-                    text-decoration: none;
+                p {
+                    margin-bottom: 5px;
                 }
 
                 .emoji {
@@ -61,7 +72,8 @@ const Index = () => {
                 }
 
                 .title {
-                    margin: 0;
+                    color: white;
+                    margin-bottom: 15px;
                     line-height: 1.15;
                     font-size: 4rem;
                     font-weight: 600;
@@ -73,12 +85,13 @@ const Index = () => {
                 }
 
                 .description {
+                    margin-bottom: 25px;
                     line-height: 1.5;
                     font-size: 1.5rem;
                 }
 
-                .logo {
-                    height: 1em;
+                .btn-container {
+                    margin-bottom: 15px;
                 }
             `}</style>
         </div>

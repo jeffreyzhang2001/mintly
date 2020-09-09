@@ -1,4 +1,10 @@
+@import "~antd/dist/antd.css";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #33ffaa;
+    --secondary-color: #008f53;
+}
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, Inter, Segoe UI,
@@ -8,4 +14,21 @@ body {
 
 * {
     box-sizing: border-box;
+}
+
+.ant-btn-primary, .ant-btn-primary:hover {
+    color: black;
+    text-shadow: none;
+    font-weight: 500;
+}
+.ant-btn-primary {
+    height: 40px;
+    line-height: 1;
+    font-size: 20px !important;
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+}
+.ant-btn-primary:hover {
+    background-color: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
 }
