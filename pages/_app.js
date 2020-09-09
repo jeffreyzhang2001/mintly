@@ -17,7 +17,14 @@ const App = ({ Component, pageProps }) => {
                     href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/twitter/248/leaf-fluttering-in-wind_1f343.png"
                 />
             </Head>
-            <Component {...pageProps} />
+            <div className="container">
+                <Component {...pageProps} />
+            </div>
+            <style jsx>{`
+                .container {
+                    margin-top: 70px;
+                }
+            `}</style>
         </Layout>
     )
 }

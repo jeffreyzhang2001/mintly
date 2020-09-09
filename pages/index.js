@@ -20,8 +20,8 @@ const Index = () => {
                 <div className="description">
                     <p>Paper trading, supercharged.</p>
                     <TextLoop interval={2000} mask={true}>
-                        <span>Completely free, forever.</span>
                         <span>Real-time market data.</span>
+                        <span>Completely free, forever.</span>
                         <span>Trade options stress-free.</span>
                         <span>Manage multiple portfolios.</span>
                     </TextLoop>

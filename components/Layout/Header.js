@@ -41,7 +41,8 @@ const Header = () => {
                     display: flex;
                     justify-content: space-between;
                     background-color: #121212;
-                    position: fixed;
+                    position: absolute;
+                    top: 0;
                     width: 100%;
                     height: 70px;
                     overflow: hidden;

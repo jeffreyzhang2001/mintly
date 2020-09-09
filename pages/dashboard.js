@@ -4,16 +4,16 @@ const Dashboard = () => {
     const { user } = useUser()
 
     return (
-        <header>
+        <div>
             <h1>Dashboard</h1>
-            {user && (
+            {/* {user && (
                 <>
                     <p>Profile:</p>
                     <pre>{JSON.stringify(user, null, 2)}</pre>
                 </>
-            )}
+            )} */}
             <style jsx>{``}</style>
-        </header>
+        </div>
     )
 }
 
