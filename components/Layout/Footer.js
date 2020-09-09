@@ -4,9 +4,9 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons'
 const Footer = () => {
     return (
         <footer>
-            Made with 💖 //
+            Made with 💖 /
             <a
-                href="https://jeffreyzhang.tech"
+                href="https://jeffreyzhang.me"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="name-link"

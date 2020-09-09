@@ -7,9 +7,15 @@
 }
 
 body {
+    background-color: black;
+    color: white;
     font-family: -apple-system, BlinkMacSystemFont, Inter, Segoe UI,
         Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
         Helvetica Neue, sans-serif;
+}
+
+h1, h2, h3, h4 {
+    color: white;
 }
 
 * {
@@ -24,7 +30,7 @@ body {
 .ant-btn-primary {
     height: 40px;
     line-height: 1;
-    font-size: 20px !important;
+    font-size: 18px !important;
     border-color: var(--primary-color);
     background-color: var(--primary-color);
 }

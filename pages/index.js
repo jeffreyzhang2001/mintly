@@ -72,7 +72,6 @@ const Index = () => {
                 }
 
                 .title {
-                    color: white;
                     margin-bottom: 15px;
                     line-height: 1.15;
                     font-size: 4rem;

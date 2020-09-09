@@ -8,54 +8,56 @@ const Header = () => {
     const { user, logout } = useUser()
 
     return (
-        <header>
-            {user ? (
-                <>
-                    <Link href="/profile">
-                        <a>Profile</a>
-                    </Link>
-                    <Link href="">
-                        <a onClick={() => logout()}>Logout</a>
-                    </Link>
-                </>
-            ) : (
-                <>
-                    <Link href={'/login'}>
-                        <p>Log In</p>
-                    </Link>
-                    <Link href={'/login'}>
-                        <Button type="primary" shape="round">
-                            Sign Up
-                        </Button>
-                    </Link>
-                </>
-            )}
+        <div>
+            <header>
+                {user ? (
+                    <>
+                        <Link href="/profile">
+                            <a>Profile</a>
+                        </Link>
+                        <Link href="">
+                            <a onClick={() => logout()}>Logout</a>
+                        </Link>
+                    </>
+                ) : (
+                    <>
+                        <Link href={'/login'}>
+                            <h2>Log In</h2>
+                        </Link>
+                        <Link href={'/login'}>
+                            <Button type="primary" shape="round" size="middle">
+                                Sign Up
+                            </Button>
+                        </Link>
+                    </>
+                )}
 
-            {/* <div className="container">
-                <Twemoji>🍃</Twemoji>
-            </div> */}
+                {/* <div className="container">
+                    <Twemoji>🍃</Twemoji>
+                </div> */}
+            </header>
             <style jsx>{`
                 header {
+                    display: flex;
+                    justify-content: space-between;
                     background-color: #121212;
                     position: fixed;
                     width: 100%;
                     height: 70px;
-                    display: flex;
                     overflow: hidden;
                 }
 
-                header img {
-                    margin-left: 0.5rem;
-                }
-
-                header a {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
+                h2 {
+                    margin: 0;
+                    padding: 0;
+                    display: inline-block;
                     color: white;
                 }
+                h2:hover {
+                    cursor: pointer;
+                }
             `}</style>
-        </header>
+        </div>
     )
 }
 

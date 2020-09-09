@@ -10,12 +10,7 @@ const Layout = ({ children }) => {
             <Footer />
 
             <style jsx global>
-                {`
-                    .page-layout {
-                        background-color: black;
-                        color: white;
-                    }
-                `}
+                {``}
             </style>
         </div>
     )
