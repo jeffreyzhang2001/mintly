@@ -4,14 +4,13 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons'
 const Footer = () => {
     return (
         <footer>
-            Made with 💖 /
             <a
                 href="https://jeffreyzhang.me"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="name-link"
             >
-                Jeffrey Zhang
+                by Jeffrey Zhang
             </a>
             <a
                 href="https://github.com/jeffreyzhang2001"
@@ -41,6 +40,7 @@ const Footer = () => {
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    font-size: 16px;
                     color: white;
                 }
 

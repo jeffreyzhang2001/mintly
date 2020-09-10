@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { useUser } from '../utils/auth/useUser'
 import Twemoji from 'react-twemoji'
 
@@ -5,7 +6,10 @@ const Profile = () => {
     const { user, logout } = useUser()
 
     return (
-        <header>
+        <div>
+            <Head>
+                <title>Mintly | Profile</title>
+            </Head>
             <h1>Profile</h1>
             {user && (
                 <>
@@ -25,7 +29,7 @@ const Profile = () => {
                 Log out
             </p>
             <style jsx>{``}</style>
-        </header>
+        </div>
     )
 }
 

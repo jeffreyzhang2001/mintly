@@ -24,7 +24,7 @@ h1, h2, h3, h4 {
 }
 
 .ant-btn-primary, .ant-btn-primary:hover {
-    color: black;
+    color: black !important;
     text-shadow: none;
     font-weight: 500;
 }
@@ -32,8 +32,8 @@ h1, h2, h3, h4 {
     height: 40px;
     line-height: 1;
     font-size: 18px !important;
-    border-color: var(--primary-color);
-    background-color: var(--primary-color);
+    border-color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
 }
 .ant-btn-primary:hover {
     background-color: var(--secondary-color) !important;

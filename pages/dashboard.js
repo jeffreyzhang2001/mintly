@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { useUser } from '../utils/auth/useUser'
 
 const Dashboard = () => {
@@ -5,6 +6,9 @@ const Dashboard = () => {
 
     return (
         <div>
+            <Head>
+                <title>Mintly | Dashboard</title>
+            </Head>
             <h1>Dashboard</h1>
             {/* {user && (
                 <>
