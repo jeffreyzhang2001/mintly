@@ -1,7 +1,7 @@
 import { useState, useEffect, createContext } from 'react'
+import PropTypes from 'prop-types'
 import nookies from 'nookies'
 import { firebaseClient } from './firebaseClient'
-import PropTypes from 'prop-types'
 
 export const AuthContext = createContext({
     user: null,
