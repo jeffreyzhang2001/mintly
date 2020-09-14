@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useAuth } from '../../utils/hooks/useAuth'
+import useAuth from '../../utils/hooks/useAuth'
 
 import { Button } from 'antd'
 import Twemoji from 'react-twemoji'

@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useAuth } from '../utils/hooks/useAuth'
+import useAuth from '../utils/hooks/useAuth'
 
 const Profile = () => {
     const { user, logout } = useAuth()

@@ -3,8 +3,8 @@ import { useContext } from 'react'
 import { firebaseClient } from '../firebaseClient'
 import { AuthContext } from '../AuthContext'
 
-export const useAuth = () => {
-    // Extract useful user data from AuthContext.user
+const useAuth = () => {
+    // Extract useful user data from AuthContext's user
     const { email, displayName, photoURL, uid, xa } =
         useContext(AuthContext).user || {}
     let user =
@@ -34,3 +34,5 @@ export const useAuth = () => {
 
     return { user, logout }
 }
+
+export default useAuth
