@@ -1,9 +1,6 @@
 import Head from 'next/head'
-import { useUser } from '../utils/auth/useUser'
 
 const Dashboard = () => {
-    const { user } = useUser()
-
     return (
         <div>
             <Head>

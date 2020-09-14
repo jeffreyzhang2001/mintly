@@ -1,18 +1,11 @@
 import Link from 'next/link'
-import { useUser } from '../../utils/auth/useUser'
+import { useAuth } from '../../utils/AuthContext'
 
-import { Button, Menu, Dropdown } from 'antd'
+import { Button } from 'antd'
 import Twemoji from 'react-twemoji'
 
 const Header = () => {
-    const { user, logout } = useUser()
-    const menu = (
-        <Menu>
-            <Menu.Item>
-                <a onClick={() => logout()}>Log Out</a>
-            </Menu.Item>
-        </Menu>
-    )
+    const { user } = useAuth()
 
     return (
         <div>
@@ -24,15 +17,8 @@ const Header = () => {
                 </Link>
                 {user ? (
                     <>
-                        {/* <Link href={''}>
-                            <h2 className="loginBtn" }>
-                                Log Out
-                            </h2>
-                        </Link> */}
                         <Link href="/profile">
-                            <Dropdown overlay={menu}>
-                                <h2 className="loginBtn">Profile</h2>
-                            </Dropdown>
+                            <h2 className="loginBtn">Profile</h2>
                         </Link>
                         <Link href="/dashboard">
                             <Button type="primary" shape="round" size="large">

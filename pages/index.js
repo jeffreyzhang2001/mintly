@@ -1,13 +1,14 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useUser } from '../utils/auth/useUser'
+
+import { useAuth } from '../utils/AuthContext'
 
 import { Button } from 'antd'
 import TextLoop from 'react-text-loop'
 import Twemoji from 'react-twemoji'
 
 const Index = () => {
-    const { user } = useUser()
+    const { user } = useAuth()
 
     return (
         <div className="container">
