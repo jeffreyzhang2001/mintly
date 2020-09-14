@@ -1,10 +1,9 @@
-import { useRouter } from 'next/router'
-import { useState, useEffect, useContext, createContext } from 'react'
-import PropTypes from 'prop-types'
+import { useState, useEffect, createContext } from 'react'
 import nookies from 'nookies'
 import { firebaseClient } from './firebaseClient'
+import PropTypes from 'prop-types'
 
-const AuthContext = createContext({
+export const AuthContext = createContext({
     user: null,
 })
 
@@ -32,22 +31,4 @@ export function AuthProvider({ children }) {
 
 AuthProvider.propTypes = {
     children: PropTypes.node,
-}
-
-export const useAuth = () => {
-    const router = useRouter()
-
-    const logout = async () => {
-        return firebaseClient
-            .auth()
-            .signOut()
-            .then(() => {
-                router.push('/login')
-            })
-            .catch((e) => {
-                console.error(e)
-            })
-    }
-
-    return { user: useContext(AuthContext).user, logout }
 }

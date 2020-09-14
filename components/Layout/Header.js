@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useAuth } from '../../utils/AuthContext'
+import { useAuth } from '../../utils/hooks/useAuth'
 
 import { Button } from 'antd'
 import Twemoji from 'react-twemoji'
@@ -39,7 +39,7 @@ const Header = () => {
                     </>
                 )}
             </header>
-            <style jsx global>{`
+            <style jsx>{`
                 header {
                     display: flex;
                     align-items: center;
@@ -53,12 +53,12 @@ const Header = () => {
                     overflow: hidden;
                 }
 
-                .emoji {
+                :global(.emoji) {
                     height: 50px;
                     width: 50px;
                     transition: all 0.5s ease;
                 }
-                .emoji:hover {
+                :global(.emoji):hover {
                     -webkit-transform: rotate(-20deg);
                     -webkit-filter: brightness(1.25);
                 }

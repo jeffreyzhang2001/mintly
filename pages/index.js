@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 
-import { useAuth } from '../utils/AuthContext'
+import { useAuth } from '../utils/hooks/useAuth'
 
 import { Button } from 'antd'
 import TextLoop from 'react-text-loop'

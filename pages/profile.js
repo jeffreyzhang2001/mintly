@@ -1,10 +1,9 @@
 import Head from 'next/head'
-import { useAuth } from '../utils/AuthContext'
-import Twemoji from 'react-twemoji'
+import { useAuth } from '../utils/hooks/useAuth'
 
 const Profile = () => {
     const { user, logout } = useAuth()
-    console.log(user)
+
     return (
         <div>
             <Head>
