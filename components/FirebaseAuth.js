@@ -1,55 +1,69 @@
-/* globals window */
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import { firebaseClient } from '../utils/firebaseClient'
-
-const firebaseAuthConfig = {
-    signInFlow: 'popup',
-    // Auth providers
-    // https://github.com/firebase/firebaseui-web#configure-oauth-providers
-    signInOptions: [
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        {
-            provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            requireDisplayName: true,
-        },
-    ],
-    //signInSuccessUrl: '/dashboard',
-    credentialHelper: 'none',
-    callbacks: {
-        signInSuccessWithAuthResult: (authResult) => {
-            // Create database entry for user if they're registering
-            if (authResult.additionalUserInfo.isNewUser) {
-                console.log('make db entry')
-                const res = firebaseClient
-                    .firestore()
-                    .collection('users')
-                    .doc(authResult.user.uid)
-                    .set({
-                        balance: 1000,
-                    })
-            }
-            return true
-        },
-    },
-}
+import useAuth from '../utils/hooks/useAuth'
 
 const FirebaseAuth = () => {
-    const [renderAuth, setRenderAuth] = useState(false)
+    const { user } = useAuth()
+    const router = useRouter()
 
+    useEffect(() => {
+        if (user) {
+            router.push('/dashboard')
+        }
+    }, [user])
+    const firebaseAuthConfig = {
+        signInFlow: 'popup',
+        // Auth providers
+        // https://github.com/firebase/firebaseui-web#configure-oauth-providers
+        signInOptions: [
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            {
+                provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                requireDisplayName: true,
+            },
+        ],
+        credentialHelper: 'none',
+        callbacks: {
+            signInSuccessWithAuthResult: (authResult) => {
+                // Create database entry for user if they're registering
+                if (authResult.additionalUserInfo.isNewUser) {
+                    const res = firebaseClient
+                        .firestore()
+                        .collection('users')
+                        .doc(authResult.user.uid)
+                        .set({
+                            uid: authResult.user.uid,
+                            balance: 1000,
+                        })
+                        .then((res) => router.push('/dashboard'))
+                } else {
+                    router.push('/dashboard')
+                }
+                return false
+            },
+        },
+    }
+    
+    // Render logic
+    const [renderAuth, setRenderAuth] = useState(false)
     useEffect(() => {
         if (typeof window !== 'undefined') {
             setRenderAuth(true)
         }
     }, [])
+
     return (
         <div>
             {renderAuth ? (
                 <div className="firebase-auth-container">
                     <h1>Log In / Register</h1>
-                    <h2>Sign in to save your portfolios</h2>
+                    <h2>
+                        Sign in to start trading (we&apos;ll mint ____ for you)
+                    </h2>
                     <StyledFirebaseAuth
                         uiConfig={firebaseAuthConfig}
                         firebaseAuth={firebase.auth()}

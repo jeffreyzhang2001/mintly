@@ -2,6 +2,8 @@ import Head from 'next/head'
 import PropTypes from 'prop-types'
 import nookies from 'nookies'
 import { firebaseAdmin } from '../utils/firebaseAdmin'
+import { firebaseClient } from '../utils/firebaseClient'
+import usePagination from 'firestore-pagination-hook'
 import useAuth from '../utils/hooks/useAuth'
 
 export const getServerSideProps = async (ctx) => {
@@ -10,21 +12,17 @@ export const getServerSideProps = async (ctx) => {
         const token = await firebaseAdmin.auth().verifyIdToken(cookies.token)
         const { uid, email } = token
 
-        return {
-            props: {
-                message: `Your email is ${email} and your UID is ${uid}.`,
-            },
-        }
+        return { props: { uid } }
     } catch (err) {
         // either the `token` cookie didn't exist or token verification failed
-        // either way: redirect to the login page
         ctx.res.writeHead(302, { Location: '/login' }).end()
         return { props: {} }
     }
 }
 
-const Profile = () => {
+const Profile = ({ uid }) => {
     const { user, logout } = useAuth()
+    const { displayName, photoURL } = user || {}
 
     return (
         <div>
@@ -34,7 +32,7 @@ const Profile = () => {
             <h1>Profile</h1>
             {user && (
                 <>
-                    <p
+                    <a
                         style={{
                             display: 'inline-block',
                             color: 'blue',
@@ -43,14 +41,18 @@ const Profile = () => {
                         onClick={() => logout()}
                     >
                         Log out
-                    </p>
-                    <p>Profile:</p>
-                    <pre>{JSON.stringify(user, null, 2)}</pre>
+                    </a>
+                    {displayName}
+                    {photoURL}
                 </>
             )}
             <style jsx>{``}</style>
         </div>
     )
+}
+
+Profile.propTypes = {
+    uid: PropTypes.string,
 }
 
 export default Profile

@@ -2,6 +2,9 @@ import Head from 'next/head'
 import PropTypes from 'prop-types'
 import nookies from 'nookies'
 import { firebaseAdmin } from '../utils/firebaseAdmin'
+import { firebaseClient } from '../utils/firebaseClient'
+import usePagination from 'firestore-pagination-hook'
+import useAuth from '../utils/hooks/useAuth'
 
 export const getServerSideProps = async (ctx) => {
     try {
@@ -9,40 +12,42 @@ export const getServerSideProps = async (ctx) => {
         const token = await firebaseAdmin.auth().verifyIdToken(cookies.token)
         const { uid, email } = token
 
-        return {
-            props: {
-                message: `Your email is ${email} and your UID is ${uid}.`,
-            },
-        }
+        return { props: { uid } }
     } catch (err) {
-        console.log(err)
         // either the `token` cookie didn't exist or token verification failed
-        // either way: redirect to the login page
         ctx.res.writeHead(302, { Location: '/login' }).end()
         return { props: {} }
     }
 }
 
-const Dashboard = ({ message }) => {
+const Dashboard = ({ uid }) => {
+    // Wait for firebaseClient to initialize db (if loading /dashboard directly), then make usePagination query
+    const db = firebaseClient.apps.length && firebaseClient.firestore()
+    const {
+        loading,
+        loadingError,
+        loadingMore,
+        loadingMoreError,
+        hasMore,
+        items,
+        loadMore,
+    } = usePagination(db && db.collection('users').where('uid', '==', uid))
+
+    const data = items.map((item) => item.data())
     return (
         <div>
             <Head>
                 <title>Mintly | Dashboard</title>
             </Head>
             <h1>Dashboard</h1>
-            {/* {user && (
-                <>
-                    <p>Profile:</p>
-                    <pre>{JSON.stringify(user, null, 2)}</pre>
-                </>
-            )} */}
+            {data?.[0]?.balance}
             <style jsx>{``}</style>
         </div>
     )
 }
 
 Dashboard.propTypes = {
-    message: PropTypes.string,
+    uid: PropTypes.string,
 }
 
 export default Dashboard
