@@ -28,7 +28,7 @@ const Header = () => {
                 </Link>
                 <div className="currentpage-text-container">
                     <h1 className="slash">/</h1>
-                    <h1>{currentPage}</h1>
+                    <h1 className="currentpage">{currentPage}</h1>
                 </div>
                 {user ? (
                     <>
@@ -88,6 +88,10 @@ const Header = () => {
 
                 .slash {
                     color: gray;
+                    font-size: 30px;
+                }
+                .currentpage {
+                    margin-top: 5px;
                 }
 
                 .loginBtn {
