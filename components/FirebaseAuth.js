@@ -105,14 +105,15 @@ const FirebaseAuth = ({ isRegistering }) => {
                                 setAuthContainerKey((prevKey) => prevKey + 1)
                             }
                         >
-                            (If you&apos;re new, we&apos;ll mint $
-                            {
+                            (If you&apos;re new, we&apos;ll mint
+                            <div className="bankroll-form-container">
+                                $
                                 <BankrollSizeInput
                                     bankrollSize={bankrollSize}
                                     onChange={onChange}
                                 />
-                            }{' '}
-                            for you)
+                                for you)
+                            </div>
                         </h2>
                     )}
                     {bankrollSize === 0 && (
@@ -150,7 +151,7 @@ const FirebaseAuth = ({ isRegistering }) => {
                     color: #008f53;
                 }
                 :global(.ant-row) {
-                    margin-left: 10px;
+                    margin-left: 4px;
                     margin-right: 10px;
                     width: 80px;
                 }
@@ -163,11 +164,23 @@ const FirebaseAuth = ({ isRegistering }) => {
 
                 h2 {
                     font-size: 23px;
-                    display: inherit;
+                    display: flex;
                     margin-bottom: 5px;
+                }
+                .bankroll-form-container {
+                    margin-left: 5px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                }
+                @media only screen and (max-width: 600px) {
+                    h2 {
+                        flex-direction: column;
+                    }
                 }
 
                 h3 {
+                    text-align: center;
                     margin-top: -15px;
                     color: pink;
                 }
