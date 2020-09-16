@@ -67,7 +67,7 @@ const Profile = ({ uid }) => {
                 }
 
                 .userinfo-container {
-                    width: 60%;
+                    width: 55%;
                     display: flex;
                 }
                 :global(.logout-button) {
@@ -83,21 +83,24 @@ const Profile = ({ uid }) => {
                     border-color: #931a25 !important;
                 }
 
+                h1 {
+                    margin-bottom: 0;
+                    margin-left: 30px;
+                    font-size: 32px;
+                }
+
                 @media only screen and (max-width: 600px) {
                     .userinfo-container {
                         flex-direction: column;
                         align-items: center;
                         width: 90%;
                     }
+                    h1 {
+                        margin: 0;
+                    }
                     :global(.logout-button) {
                         margin-left: 0;
                     }
-                }
-
-                h1 {
-                    margin-bottom: 0;
-                    margin-left: 20px;
-                    font-size: 32px;
                 }
             `}</style>
         </div>
