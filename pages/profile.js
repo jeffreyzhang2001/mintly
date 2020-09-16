@@ -75,8 +75,8 @@ const Profile = ({ uid }) => {
                     margin-left: auto;
                     height: 40px;
                     border-radius: 8px;
-                    background-color: #ff7e67;
-                    border-color: #ff7e67;
+                    background-color: #ff7e67 !important;
+                    border-color: #ff7e67 !important;
                 }
                 :global(.logout-button):hover {
                     background-color: #931a25 !important;

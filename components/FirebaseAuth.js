@@ -61,6 +61,7 @@ const FirebaseAuth = ({ isRegistering }) => {
         credentialHelper: 'none',
         callbacks: {
             signInSuccessWithAuthResult: (authResult) => {
+                setIsAuthenticated(true)
                 // Create database entry for user if they're registering
                 if (authResult.additionalUserInfo.isNewUser) {
                     const res = firebaseClient
@@ -80,6 +81,7 @@ const FirebaseAuth = ({ isRegistering }) => {
 
     // Render logic
     const [renderAuth, setRenderAuth] = useState(false)
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
     useEffect(() => {
         if (typeof window !== 'undefined') {
             setRenderAuth(true)
@@ -91,7 +93,7 @@ const FirebaseAuth = ({ isRegistering }) => {
 
     return (
         <div>
-            {renderAuth ? (
+            {renderAuth && !isAuthenticated ? (
                 <div className="firebase-auth-container">
                     <h1>{isRegistering ? 'Register' : 'Log In'}</h1>
                     {isRegistering ? (
@@ -128,7 +130,9 @@ const FirebaseAuth = ({ isRegistering }) => {
                         firebaseAuth={firebase.auth()}
                     />
                 </div>
-            ) : null}
+            ) : (
+                <h1 className="firebase-auth-container">Loading...</h1>
+            )}
 
             <style jsx>{`
                 .firebase-auth-container {
