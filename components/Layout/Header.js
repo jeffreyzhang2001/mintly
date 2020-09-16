@@ -31,7 +31,7 @@ const Header = () => {
                         <Link href={'/login'}>
                             <h2 className="loginBtn">Log In</h2>
                         </Link>
-                        <Link href={'/login'}>
+                        <Link href={'/register'}>
                             <Button type="primary" shape="round" size="middle">
                                 Sign Up
                             </Button>

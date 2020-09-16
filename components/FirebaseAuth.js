@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
@@ -6,19 +7,50 @@ import 'firebase/auth'
 import { firebaseClient } from '../utils/firebaseClient'
 import useAuth from '../utils/hooks/useAuth'
 
-const FirebaseAuth = () => {
-    const { user } = useAuth()
-    const router = useRouter()
+import { Form, Input } from 'antd'
 
+const BankrollSizeInput = ({ bankrollSize, onChange }) => {
+    return (
+        <Form.Item>
+            <Input
+                value={bankrollSize}
+                maxLength="5"
+                bordered="false"
+                onChange={onChange}
+            />
+        </Form.Item>
+    )
+}
+
+BankrollSizeInput.propTypes = {
+    bankrollSize: PropTypes.number.isRequired,
+    onChange: PropTypes.func.isRequired,
+}
+
+const FirebaseAuth = ({ isRegistering }) => {
+    const { user } = useAuth()
     useEffect(() => {
         if (user) {
             router.push('/dashboard')
         }
     }, [user])
+
+    const router = useRouter()
+
+    const [bankrollSize, setBankrollSize] = useState(50000)
+    const onChange = (e) => {
+        const newValue = parseInt(e.target.value)
+        if (Number.isNaN(newValue)) {
+            setBankrollSize(0)
+            return
+        } else if (newValue < 0) {
+            return
+        }
+        setBankrollSize(Number(newValue))
+    }
+
     const firebaseAuthConfig = {
         signInFlow: 'popup',
-        // Auth providers
-        // https://github.com/firebase/firebaseui-web#configure-oauth-providers
         signInOptions: [
             firebase.auth.GoogleAuthProvider.PROVIDER_ID,
             {
@@ -37,7 +69,7 @@ const FirebaseAuth = () => {
                         .doc(authResult.user.uid)
                         .set({
                             uid: authResult.user.uid,
-                            balance: 1000,
+                            balance: bankrollSize === 0 ? 1000 : bankrollSize,
                         })
                         .then((res) => router.push('/dashboard'))
                 }
@@ -54,15 +86,43 @@ const FirebaseAuth = () => {
         }
     }, [])
 
+    // Mechanism to re-render StyledFirebaseAuth on hover to force update uiConfig
+    const [authContainerKey, setAuthContainerKey] = useState(0)
+
     return (
         <div>
             {renderAuth ? (
                 <div className="firebase-auth-container">
                     <h1>Log In / Register</h1>
-                    <h2>
-                        Sign in to start trading (we&apos;ll mint ____ for you)
-                    </h2>
+                    {isRegistering ? (
+                        <h2>Sign up to start trading.</h2>
+                    ) : (
+                        <h2>Sign in to start trading.</h2>
+                    )}
+                    {isRegistering && (
+                        <h2
+                            onMouseLeave={() =>
+                                setAuthContainerKey((prevKey) => prevKey + 1)
+                            }
+                        >
+                            (If you&apos;re new, we&apos;ll mint $
+                            {
+                                <BankrollSizeInput
+                                    bankrollSize={bankrollSize}
+                                    onChange={onChange}
+                                />
+                            }{' '}
+                            for you)
+                        </h2>
+                    )}
+                    {bankrollSize === 0 && (
+                        <h3>
+                            You can&apos;t trade with $0! We&apos;ll mint you
+                            $1,000 instead.
+                        </h3>
+                    )}
                     <StyledFirebaseAuth
+                        key={authContainerKey}
                         uiConfig={firebaseAuthConfig}
                         firebaseAuth={firebase.auth()}
                     />
@@ -78,18 +138,46 @@ const FirebaseAuth = () => {
                     margin-top: 150px;
                 }
 
-                :global(.firebaseui-idp-text) {
+                :global(.firebaseui-idp-text),
+                :global(.ant-input-affix-wrapper) {
                     font-family: -apple-system, BlinkMacSystemFont, Inter,
-                        Roboto;
+                        Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
+                        Droid Sans, Helvetica Neue, sans-serif;
+                }
+
+                :global(.ant-input) {
+                    font-size: 18px;
+                    color: #008f53;
+                }
+                :global(.ant-row) {
+                    margin-left: 10px;
+                    margin-right: 10px;
+                    width: 80px;
                 }
 
                 h1 {
                     font-size: 40px;
-                    margin: 0;
+                    margin-bottom: 10px;
+                    color: #33ffaa;
+                }
+
+                h2 {
+                    font-size: 23px;
+                    display: inherit;
+                    margin-bottom: 5px;
+                }
+
+                h3 {
+                    margin-top: -15px;
+                    color: pink;
                 }
             `}</style>
         </div>
     )
+}
+
+FirebaseAuth.propTypes = {
+    isRegistering: PropTypes.bool,
 }
 
 export default FirebaseAuth

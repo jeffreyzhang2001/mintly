@@ -30,7 +30,7 @@ const Index = () => {
                             </Button>
                         </Link>
                     ) : (
-                        <Link href={'/login'}>
+                        <Link href={'/register'}>
                             <Button type="primary" shape="round" size="large">
                                 Get Started
                             </Button>
