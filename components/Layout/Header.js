@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 import useAuth from '../../utils/hooks/useAuth'
 
@@ -7,6 +8,16 @@ import Twemoji from 'react-twemoji'
 const Header = () => {
     const { user } = useAuth()
 
+    // Use router to check which page user is on and display it's name in header
+    const router = useRouter()
+    const pathname = router.pathname
+    const currentPage =
+        pathname === '/profile'
+            ? 'Profile'
+            : pathname === '/dashboard'
+            ? 'Dashboard'
+            : null
+
     return (
         <div>
             <header>
@@ -15,6 +26,10 @@ const Header = () => {
                         <Twemoji options={{ className: 'emoji' }}>🍃</Twemoji>
                     </a>
                 </Link>
+                <div className="currentpage-text-container">
+                    <h1 className="slash">/</h1>
+                    <h1>{currentPage}</h1>
+                </div>
                 {user ? (
                     <>
                         <Link href="/profile">
@@ -43,7 +58,6 @@ const Header = () => {
                 header {
                     display: flex;
                     align-items: center;
-                    /justify-content: space-between;
                     padding: 0 15px 0 15px;
                     background-color: #121212;
                     position: absolute;
@@ -63,6 +77,19 @@ const Header = () => {
                     -webkit-filter: brightness(1.25);
                 }
 
+                .currentpage-text-container {
+                    display: flex;
+                }
+                @media only screen and (max-width: 600px) {
+                    .currentpage-text-container {
+                        display: none;
+                    }
+                }
+
+                .slash {
+                    color: gray;
+                }
+
                 .loginBtn {
                     margin-left: auto;
                     margin-right: 10px;
@@ -73,6 +100,13 @@ const Header = () => {
 
                 a {
                     color: black;
+                }
+
+                h1 {
+                    margin-bottom: 0;
+                    margin-left: 10px;
+                    font-weight: 400;
+                    font-size: 25px;
                 }
 
                 h2 {

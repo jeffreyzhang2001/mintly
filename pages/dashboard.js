@@ -35,7 +35,6 @@ const Dashboard = ({ uid }) => {
     const data = items.map((item) => item.data())
     return (
         <div>
-            <h1>Dashboard</h1>
             {data?.[0]?.balance}
             <style jsx>{``}</style>
         </div>

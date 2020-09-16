@@ -3,7 +3,7 @@
 
 :root {
     --primary-color: #33ffaa;
-    --secondary-color: #008f53;
+    --dark-primary-color: #008f53;
 }
 
 body {
@@ -32,10 +32,10 @@ h1, h2, h3, h4 {
     height: 40px;
     line-height: 1;
     font-size: 18px !important;
-    border-color: var(--primary-color) !important;
-    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
 .ant-btn-primary:hover {
-    background-color: var(--secondary-color) !important;
-    border-color: var(--secondary-color) !important;
+    background-color: var(--dark-primary-color) !important;
+    border-color: var(--dark-primary-color) !important;
 }

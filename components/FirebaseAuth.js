@@ -93,7 +93,7 @@ const FirebaseAuth = ({ isRegistering }) => {
         <div>
             {renderAuth ? (
                 <div className="firebase-auth-container">
-                    <h1>Log In / Register</h1>
+                    <h1>{isRegistering ? 'Register' : 'Log In'}</h1>
                     {isRegistering ? (
                         <h2>Sign up to start trading.</h2>
                     ) : (
