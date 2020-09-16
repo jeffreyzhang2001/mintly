@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import PropTypes from 'prop-types'
 import nookies from 'nookies'
 import { firebaseAdmin } from '../utils/firebaseAdmin'
@@ -36,9 +35,6 @@ const Dashboard = ({ uid }) => {
     const data = items.map((item) => item.data())
     return (
         <div>
-            <Head>
-                <title>Mintly | Dashboard</title>
-            </Head>
             <h1>Dashboard</h1>
             {data?.[0]?.balance}
             <style jsx>{``}</style>

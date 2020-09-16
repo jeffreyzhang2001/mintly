@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import Link from 'next/link'
 
 import useAuth from '../utils/hooks/useAuth'
@@ -12,10 +11,6 @@ const Index = () => {
 
     return (
         <div className="container">
-            <Head>
-                <title>Mintly</title>
-            </Head>
-
             <main>
                 <h1 className="title">Mintly</h1>
                 <div className="description">

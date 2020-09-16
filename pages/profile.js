@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import PropTypes from 'prop-types'
 import nookies from 'nookies'
 import { firebaseAdmin } from '../utils/firebaseAdmin'
@@ -26,9 +25,6 @@ const Profile = ({ uid }) => {
 
     return (
         <div>
-            <Head>
-                <title>Mintly | Profile</title>
-            </Head>
             <h1>Profile</h1>
             {user && (
                 <>
