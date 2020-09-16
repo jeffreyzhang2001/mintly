@@ -40,14 +40,12 @@ const FirebaseAuth = () => {
                             balance: 1000,
                         })
                         .then((res) => router.push('/dashboard'))
-                } else {
-                    router.push('/dashboard')
                 }
                 return false
             },
         },
     }
-    
+
     // Render logic
     const [renderAuth, setRenderAuth] = useState(false)
     useEffect(() => {
@@ -78,6 +76,11 @@ const FirebaseAuth = () => {
                     justify-content: center;
                     align-items: center;
                     margin-top: 150px;
+                }
+
+                :global(.firebaseui-idp-text) {
+                    font-family: -apple-system, BlinkMacSystemFont, Inter,
+                        Roboto;
                 }
 
                 h1 {
