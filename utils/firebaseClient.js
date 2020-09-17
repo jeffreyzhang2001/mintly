@@ -9,7 +9,7 @@ if (typeof window !== 'undefined' && !firebase.apps.length) {
         databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
         projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
     })
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 }
 
 export { firebase as firebaseClient }
