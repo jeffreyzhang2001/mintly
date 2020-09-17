@@ -24,7 +24,9 @@ const Header = () => {
                 <div className="header-container">
                     <Link href="/">
                         <a>
-                            <Twemoji options={{ className: 'emoji' }}>🍃</Twemoji>
+                            <Twemoji options={{ className: 'emoji' }}>
+                                🍃
+                            </Twemoji>
                         </a>
                     </Link>
                     <div className="currentpage-text-container">
@@ -37,7 +39,11 @@ const Header = () => {
                                 <h2 className="loginBtn">Profile</h2>
                             </Link>
                             <Link href="/dashboard">
-                                <Button type="primary" shape="round" size="large">
+                                <Button
+                                    type="primary"
+                                    shape="round"
+                                    size="large"
+                                >
                                     Dashboard
                                 </Button>
                             </Link>
@@ -48,7 +54,11 @@ const Header = () => {
                                 <h2 className="loginBtn">Log In</h2>
                             </Link>
                             <Link href={'/register'}>
-                                <Button type="primary" shape="round" size="middle">
+                                <Button
+                                    type="primary"
+                                    shape="round"
+                                    size="middle"
+                                >
                                     Sign Up
                                 </Button>
                             </Link>
