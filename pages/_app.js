@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import Head from 'next/head'
 
 import Layout from '../components/Layout/Layout'
@@ -5,11 +6,11 @@ import './styles.css'
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css' // Import the CSS
 config.autoAddCss = false // Tell Font Awesome to skip adding the CSS automatically since it's being imported above
+import { motion } from 'framer-motion'
 
 import { AuthProvider } from '../utils/AuthContext'
 
-// eslint-disable-next-line react/prop-types
-const App = ({ Component, pageProps }) => {
+const App = ({ Component, pageProps, router }) => {
     return (
         <AuthProvider>
             <Layout>
@@ -21,7 +22,21 @@ const App = ({ Component, pageProps }) => {
                     <title>Mintly</title>
                 </Head>
                 <div className="container">
-                    <Component {...pageProps} />
+                    <motion.div
+                        key={router.route}
+                        initial="pageInitial"
+                        animate="pageAnimate"
+                        variants={{
+                            pageInitial: {
+                                opacity: 0,
+                            },
+                            pageAnimate: {
+                                opacity: 1,
+                            },
+                        }}
+                    >
+                        <Component {...pageProps} />
+                    </motion.div>
                 </div>
                 <style jsx>{`
                     .container {
