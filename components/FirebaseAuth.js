@@ -8,6 +8,7 @@ import { firebaseClient } from '../utils/firebaseClient'
 import useAuth from '../utils/hooks/useAuth'
 
 import { Form, Input } from 'antd'
+import HashLoader from 'react-spinners/HashLoader'
 
 const BankrollSizeInput = ({ bankrollSize, onChange }) => {
     return (
@@ -131,7 +132,19 @@ const FirebaseAuth = ({ isRegistering }) => {
                     />
                 </div>
             ) : (
-                <h1 className="firebase-auth-container">Loading...</h1>
+                <div>
+                    <h1 className="firebase-auth-container">Logging In...</h1>
+                    <HashLoader
+                        css={`
+                            display: block;
+                            padding-top: 300px;
+                            margin: auto;
+                        `}
+                        size={150}
+                        color={'white'}
+                        loading={isAuthenticated}
+                    />
+                </div>
             )}
 
             <style jsx>{`
