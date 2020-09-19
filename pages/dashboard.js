@@ -37,7 +37,7 @@ const Dashboard = ({ uid }) => {
 
     return (
         <div>
-            {data ? data.balance : <Skeleton height={25} />}
+            {data ? data.balance : <Skeleton />}
             <style jsx>{``}</style>
         </div>
     )

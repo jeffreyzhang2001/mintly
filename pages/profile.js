@@ -55,7 +55,9 @@ const Profile = ({ uid }) => {
                             {data ? (
                                 <h2>{`Total Balance: $${data.balance}`}</h2>
                             ) : (
-                                <Skeleton height={25} />
+                                <h2>
+                                    <Skeleton />
+                                </h2>
                             )}
                         </div>
                         <Button
@@ -128,10 +130,6 @@ const Profile = ({ uid }) => {
                     :global(.logout-button) {
                         margin-left: 0;
                     }
-                }
-
-                :global(.react-loading-skeleton) {
-                    margin-left: 30px;
                 }
             `}</style>
         </div>
