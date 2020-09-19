@@ -7,6 +7,7 @@ import useAuth from '../utils/hooks/useAuth'
 
 import { Button, Avatar } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
+import Skeleton from 'react-loading-skeleton'
 
 export const getServerSideProps = async (ctx) => {
     try {
@@ -26,6 +27,18 @@ const Profile = ({ uid }) => {
     const { user, logout } = useAuth()
     const { displayName, photoURL } = user || {}
 
+    const db = firebaseClient.apps.length && firebaseClient.firestore()
+    const {
+        loading,
+        loadingError,
+        loadingMore,
+        loadingMoreError,
+        hasMore,
+        items,
+        loadMore,
+    } = usePagination(db && db.collection('users').where('uid', '==', uid))
+    const data = items?.[0]?.data()
+
     return (
         <div className="container">
             <main>
@@ -37,7 +50,14 @@ const Profile = ({ uid }) => {
                             icon={<UserOutlined />}
                             size={120}
                         />
-                        <h1>{displayName}</h1>
+                        <div className="usertext">
+                            <h1>{displayName}</h1>
+                            {data ? (
+                                <h2>{`Total Balance: $${data.balance}`}</h2>
+                            ) : (
+                                <Skeleton height={25} />
+                            )}
+                        </div>
                         <Button
                             className="logout-button"
                             onClick={() => logout()}
@@ -70,6 +90,10 @@ const Profile = ({ uid }) => {
                     width: 55%;
                     display: flex;
                 }
+                .user-text {
+                    display: flex;
+                }
+
                 :global(.logout-button) {
                     margin-top: 5px;
                     margin-left: auto;
@@ -83,9 +107,12 @@ const Profile = ({ uid }) => {
                     border-color: #931a25 !important;
                 }
 
-                h1 {
+                h1,
+                h2 {
                     margin-bottom: 0;
                     margin-left: 30px;
+                }
+                h1 {
                     font-size: 32px;
                 }
 
@@ -101,6 +128,10 @@ const Profile = ({ uid }) => {
                     :global(.logout-button) {
                         margin-left: 0;
                     }
+                }
+
+                :global(.react-loading-skeleton) {
+                    margin-left: 30px;
                 }
             `}</style>
         </div>

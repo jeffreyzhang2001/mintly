@@ -5,6 +5,8 @@ import { firebaseClient } from '../utils/firebaseClient'
 import usePagination from 'firestore-pagination-hook'
 import useAuth from '../utils/hooks/useAuth'
 
+import Skeleton from 'react-loading-skeleton'
+
 export const getServerSideProps = async (ctx) => {
     try {
         const cookies = nookies.get(ctx)
@@ -31,11 +33,11 @@ const Dashboard = ({ uid }) => {
         items,
         loadMore,
     } = usePagination(db && db.collection('users').where('uid', '==', uid))
+    const data = items?.[0]?.data()
 
-    const data = items.map((item) => item.data())
     return (
         <div>
-            {data?.[0]?.balance}
+            {data ? data.balance : <Skeleton height={25} />}
             <style jsx>{``}</style>
         </div>
     )
