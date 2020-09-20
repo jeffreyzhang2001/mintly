@@ -129,7 +129,7 @@ const Profile = ({ uid }) => {
                                 </Button>
                             </div>
                         </div>
-                        <div className="section-title">
+                        <div className="section-title-row">
                             <h1 className="name">Portfolios</h1>
                             <Button
                                 className={cn(
@@ -225,7 +225,10 @@ const Profile = ({ uid }) => {
                                                             Delete Portfolio
                                                         </Button>
                                                         <Button
-                                                            className="primary-button"
+                                                            className={cn(
+                                                                'primary-button',
+                                                                'make-default-button',
+                                                            )}
                                                             onClick={() =>
                                                                 makeDefault(
                                                                     index,
@@ -294,7 +297,7 @@ const Profile = ({ uid }) => {
                     font-size: 28px;
                 }
 
-                .section-title {
+                .section-title-row {
                     display: flex;
                     align-items: center;
                     margin-top: 35px;
@@ -393,24 +396,38 @@ const Profile = ({ uid }) => {
                 }
 
                 @media only screen and (max-width: 600px) {
-                    .userinfo-container,
-                    .portfolio-container {
-                        flex-direction: column;
-                        align-items: center;
-                        width: 90%;
+                    .profile {
+                        width: 85%;
                     }
+                    .userinfo-container,
+                    .section-title-row,
+                    .portfolio-container,
                     .portfolio-buttons {
                         flex-direction: column;
+                    }
+                    .userinfo-container,
+                    .section-title-row {
                         align-items: center;
+                    }
+
+                    .portfolios {
+                        height: unset;
+                    }
+                    :global(.primary-button),
+                    .buttons-container,
+                    .usertext,
+                    h1 {
+                        margin-left: 0;
+                    }
+                    :global(.add-portfolio-button) {
+                        margin-left: 0;
+                        margin-bottom: 20px;
+                    }
+                    :global(.make-default-button) {
+                        margin-top: 0.5em;
                     }
                     .skeleton-container {
                         display: none;
-                    }
-                    .buttons-container {
-                        margin-left: 0;
-                    }
-                    h1 {
-                        margin: 0;
                     }
                 }
             `}</style>
