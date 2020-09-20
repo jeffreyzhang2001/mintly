@@ -72,7 +72,8 @@ const Header = () => {
                     justify-content: center;
                     padding: 0 15px 0 15px;
                     background-color: #121212;
-                    position: absolute;
+                    position: fixed;
+                    z-index: 100;
                     top: 0;
                     width: 100%;
                     height: 70px;

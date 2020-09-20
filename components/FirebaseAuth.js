@@ -71,6 +71,21 @@ const FirebaseAuth = ({ isRegistering }) => {
                         .doc(authResult.user.uid)
                         .set({
                             uid: authResult.user.uid,
+                            createdAt: firebase.firestore.Timestamp.fromDate(
+                                new Date(),
+                            ),
+                            portfolios: firebaseClient.firestore.FieldValue.arrayUnion(
+                                {
+                                    createdAt: firebaseClient.firestore.Timestamp.fromDate(
+                                        new Date(),
+                                    ),
+                                    balance:
+                                        bankrollSize === 0
+                                            ? 1000
+                                            : bankrollSize,
+                                },
+                            ),
+                            defaultPortfolioIndex: 0,
                             balance: bankrollSize === 0 ? 1000 : bankrollSize,
                         })
                         .then((res) => router.push('/dashboard'))

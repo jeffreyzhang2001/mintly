@@ -22,7 +22,7 @@ const Footer = () => {
             </a>
             <style jsx>{`
                 footer {
-                    background-color: black;
+                    background-color: #121212;
                     position: fixed;
                     bottom: 0;
                     width: 100%;
