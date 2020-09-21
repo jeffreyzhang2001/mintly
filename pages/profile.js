@@ -9,7 +9,13 @@ import useAuth from '../utils/hooks/useAuth'
 
 import cn from 'classnames'
 import { Button, Avatar, Divider, Modal } from 'antd'
-import { UserOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+import {
+    UserOutlined,
+    ExclamationCircleOutlined,
+    PlusCircleOutlined,
+    StarOutlined,
+    StarFilled,
+} from '@ant-design/icons'
 import Skeleton from 'react-loading-skeleton'
 
 export const getServerSideProps = async (ctx) => {
@@ -43,9 +49,7 @@ const Profile = ({ uid }) => {
     const firestoreData = items?.[0]?.data()
     const { totalBalance, totalEquity, portfolioData } = firestoreData || {}
 
-    const [isAddingPortfolio, setIsAddingPortfolio] = useState(false)
     const addPortfolio = () => {
-        setIsAddingPortfolio(true)
         const res = firebaseClient
             .firestore()
             .collection('users')
@@ -69,12 +73,10 @@ const Profile = ({ uid }) => {
                 },
                 { merge: true },
             )
-            .then((res) => setIsAddingPortfolio(false))
+            .then((res) => {})
     }
 
-    const [isDeletingPortfolio, setIsDeletingPortfolio] = useState(false)
     const deletePortfolio = (toDeleteIndex) => {
-        setIsDeletingPortfolio(true)
         const res = firebaseClient
             .firestore()
             .collection('users')
@@ -89,12 +91,10 @@ const Profile = ({ uid }) => {
                 },
                 { merge: true },
             )
-            .then((res) => setIsDeletingPortfolio(false))
+            .then((res) => {})
     }
 
-    const [isMakingDefault, setIsMakingDefault] = useState(false)
     const makeDefault = (newDefaultIndex) => {
-        setIsMakingDefault(true)
         const res = firebaseClient
             .firestore()
             .collection('users')
@@ -107,7 +107,30 @@ const Profile = ({ uid }) => {
                 },
                 { merge: true },
             )
-            .then((res) => setIsMakingDefault(false))
+            .then((res) => {})
+    }
+
+    const injectMoney = (index, amount) => {
+        let currentPortfolios = [...portfolioData.portfolios]
+        currentPortfolios[index] = {
+            ...currentPortfolios[index],
+            balance: currentPortfolios[index].balance + amount,
+        }
+
+        const res = firebaseClient
+            .firestore()
+            .collection('users')
+            .doc(uid)
+            .set(
+                {
+                    totalBalance: totalBalance + amount,
+                    portfolioData: {
+                        portfolios: currentPortfolios,
+                    },
+                },
+                { merge: true },
+            )
+            .then((res) => {})
     }
 
     return (
@@ -144,17 +167,10 @@ const Profile = ({ uid }) => {
                         </div>
                         <div className="section-title-row">
                             <h1 className="name">Portfolios</h1>
-                            <Button
-                                className={cn(
-                                    'primary-button',
-                                    'add-portfolio-button',
-                                )}
+                            <PlusCircleOutlined
+                                className="add-portfolio-button"
                                 onClick={() => addPortfolio()}
-                                loading={isAddingPortfolio}
-                                type="primary"
-                            >
-                                Add Portfolio
-                            </Button>
+                            />
                         </div>
                         <Divider className="divider" />
                         {portfolioData ? (
@@ -178,10 +194,32 @@ const Profile = ({ uid }) => {
                                             >
                                                 <div>
                                                     <h1>
-                                                        {name}
-                                                        {isDefault
-                                                            ? ' (Default)'
-                                                            : ''}
+                                                        {name}{' '}
+                                                        {isDefault ? (
+                                                            <StarFilled
+                                                                style={{
+                                                                    fontSize:
+                                                                        '30px',
+                                                                    color:
+                                                                        '#e9c46a',
+                                                                }}
+                                                                onClick={() => {}}
+                                                            />
+                                                        ) : (
+                                                            <StarOutlined
+                                                                style={{
+                                                                    fontSize:
+                                                                        '30px',
+                                                                    color:
+                                                                        'gray',
+                                                                }}
+                                                                onClick={() =>
+                                                                    makeDefault(
+                                                                        index,
+                                                                    )
+                                                                }
+                                                            />
+                                                        )}
                                                     </h1>
                                                     <h2>
                                                         Total Value:{' '}
@@ -205,65 +243,60 @@ const Profile = ({ uid }) => {
                                                     )}
                                                 >
                                                     {!isDefault && (
-                                                        <>
-                                                            <Button
-                                                                className="destructive-button"
-                                                                onClick={() => {
-                                                                    Modal.confirm(
-                                                                        {
-                                                                            title:
-                                                                                'Delete Portfolio',
-                                                                            icon: (
-                                                                                <ExclamationCircleOutlined />
-                                                                            ),
-                                                                            content: `Are you sure you want to delete this portfolio?`,
-                                                                            centered: true,
-                                                                            maskClosable: true,
-                                                                            okText:
-                                                                                'Delete',
-                                                                            okButtonProps: {
-                                                                                className:
-                                                                                    'destructive-button',
-                                                                            },
-                                                                            onOk: () =>
-                                                                                deletePortfolio(
-                                                                                    index,
-                                                                                ),
-                                                                            cancelText:
-                                                                                'Cancel',
-                                                                            cancelButtonProps: {
-                                                                                className:
-                                                                                    'modal-cancel-button',
-                                                                                type:
-                                                                                    'primary',
-                                                                            },
-                                                                        },
-                                                                    )
-                                                                }}
-                                                                disabled={
-                                                                    isDefault
-                                                                }
-                                                                type="primary"
-                                                            >
-                                                                Delete Portfolio
-                                                            </Button>
-                                                            <Button
-                                                                className={cn(
-                                                                    'primary-button',
-                                                                    'make-default-button',
-                                                                )}
-                                                                onClick={() =>
-                                                                    makeDefault(
-                                                                        index,
-                                                                    )
-                                                                }
-                                                                loading={false}
-                                                                type="primary"
-                                                            >
-                                                                Make Default
-                                                            </Button>
-                                                        </>
+                                                        <Button
+                                                            type="primary"
+                                                            className="destructive-button"
+                                                            onClick={() => {
+                                                                Modal.confirm({
+                                                                    title:
+                                                                        'Delete Portfolio',
+                                                                    icon: (
+                                                                        <ExclamationCircleOutlined />
+                                                                    ),
+                                                                    content: `Are you sure you want to delete this portfolio?`,
+                                                                    centered: true,
+                                                                    maskClosable: true,
+                                                                    okText:
+                                                                        'Delete',
+                                                                    okButtonProps: {
+                                                                        className:
+                                                                            'destructive-button',
+                                                                    },
+                                                                    onOk: () =>
+                                                                        deletePortfolio(
+                                                                            index,
+                                                                        ),
+                                                                    cancelText:
+                                                                        'Cancel',
+                                                                    cancelButtonProps: {
+                                                                        className:
+                                                                            'modal-cancel-button',
+                                                                        type:
+                                                                            'primary',
+                                                                    },
+                                                                })
+                                                            }}
+                                                            disabled={isDefault}
+                                                        >
+                                                            Delete Portfolio
+                                                        </Button>
                                                     )}
+                                                    <Button
+                                                        className={cn(
+                                                            'primary-button',
+                                                            'inject-money-button',
+                                                        )}
+                                                        type="primary"
+                                                        onClick={() =>
+                                                            injectMoney(
+                                                                index,
+                                                                10000,
+                                                            )
+                                                        }
+                                                        loading={false}
+                                                    >
+                                                        + $10000
+                                                    </Button>
                                                 </div>
                                             </div>
                                         )
@@ -400,7 +433,11 @@ const Profile = ({ uid }) => {
                     border-color: gray !important;
                 }
                 :global(.add-portfolio-button) {
+                    font-size: 35px;
                     margin-left: auto;
+                }
+                :global(.add-portfolio-button):hover {
+                    color: #33ffaa;
                 }
 
                 h1,
@@ -450,7 +487,7 @@ const Profile = ({ uid }) => {
                         margin-left: 0;
                         margin-bottom: 20px;
                     }
-                    :global(.make-default-button) {
+                    :global(.inject-money-button) {
                         margin-top: 0.5em;
                     }
                     .skeleton-container {
