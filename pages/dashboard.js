@@ -74,7 +74,6 @@ const Dashboard = ({ uid }) => {
                         value={autoCompleteValue}
                         onChange={(text) => handleSearch(text)}
                         onSelect={(value) => {
-                            console.log(value, 'selected')
                             setSelectedTicker(value)
                             setAutoCompleteData([])
                         }}
