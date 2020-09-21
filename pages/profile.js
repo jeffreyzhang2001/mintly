@@ -296,7 +296,7 @@ const Profile = ({ uid }) => {
                 }
 
                 main {
-                    padding: 4rem 0;
+                    padding: 1.5rem 0;
                     flex: 1;
                     display: flex;
                     flex-direction: column;
@@ -324,7 +324,7 @@ const Profile = ({ uid }) => {
                 .section-title-row {
                     display: flex;
                     align-items: center;
-                    margin-top: 35px;
+                    margin-top: 50px;
                     margin-right: auto;
                 }
 
@@ -339,7 +339,7 @@ const Profile = ({ uid }) => {
                 }
 
                 .portfolios {
-                    height: 50vh;
+                    height: 53vh;
                     overflow: auto;
                     scrollbar-color: white;
                 }
@@ -420,6 +420,9 @@ const Profile = ({ uid }) => {
                 }
 
                 @media only screen and (max-width: 600px) {
+                    main {
+                        padding: 4rem 0;
+                    }
                     .container {
                         width: 85%;
                     }
