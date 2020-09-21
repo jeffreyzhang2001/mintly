@@ -111,10 +111,10 @@ const Profile = ({ uid }) => {
     }
 
     return (
-        <div className="container">
+        <div className="profile">
             <main>
                 {user && (
-                    <div className="profile">
+                    <div className="container">
                         <div className="userinfo-container">
                             <Avatar
                                 shape="circle"
@@ -287,7 +287,7 @@ const Profile = ({ uid }) => {
                 )}
             </main>
             <style jsx>{`
-                .container {
+                .profile {
                     min-height: calc(100vh - 3.75rem);
                     overflow: hidden;
                     display: flex;
@@ -304,7 +304,7 @@ const Profile = ({ uid }) => {
                     align-items: center;
                 }
 
-                .profile {
+                .container {
                     width: 55%;
                 }
 
@@ -420,7 +420,7 @@ const Profile = ({ uid }) => {
                 }
 
                 @media only screen and (max-width: 600px) {
-                    .profile {
+                    .container {
                         width: 85%;
                     }
                     .userinfo-container,

@@ -10,5 +10,5 @@ export default async (req, res) => {
         (stockObj) =>
             JSON.stringify(stockObj).toLowerCase().indexOf(fragment) !== -1,
     )
-    res.status(200).json(matches)
+    res.status(200).json({ matches })
 }

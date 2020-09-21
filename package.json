@@ -13,6 +13,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
     "antd": "^4.6.3",
+    "axios": "^0.20.0",
     "finnhub": "^1.2.1",
     "firebase": "^7.15.5",
     "firebase-admin": "^8.12.1",
