@@ -18,20 +18,6 @@ import {
 } from '@ant-design/icons'
 import Skeleton from 'react-loading-skeleton'
 
-export const getServerSideProps = async (ctx) => {
-    try {
-        const cookies = nookies.get(ctx)
-        const token = await firebaseAdmin.auth().verifyIdToken(cookies.token)
-        const { uid, email } = token
-
-        return { props: { uid } }
-    } catch (err) {
-        // either the `token` cookie didn't exist or token verification failed
-        ctx.res.writeHead(302, { Location: '/login' }).end()
-        return { props: {} }
-    }
-}
-
 const Profile = ({ uid }) => {
     const { user, logout } = useAuth()
     const { displayName, photoURL } = user || {}
@@ -497,6 +483,20 @@ const Profile = ({ uid }) => {
             `}</style>
         </div>
     )
+}
+
+export const getServerSideProps = async (ctx) => {
+    try {
+        const cookies = nookies.get(ctx)
+        const token = await firebaseAdmin.auth().verifyIdToken(cookies.token)
+        const { uid, email } = token
+
+        return { props: { uid } }
+    } catch (err) {
+        // either the `token` cookie didn't exist or token verification failed
+        ctx.res.writeHead(302, { Location: '/login' }).end()
+        return { props: {} }
+    }
 }
 
 Profile.propTypes = {

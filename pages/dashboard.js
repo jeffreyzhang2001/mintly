@@ -11,20 +11,6 @@ import useAuth from '../utils/hooks/useAuth'
 import { Button, AutoComplete } from 'antd'
 import Skeleton from 'react-loading-skeleton'
 
-export const getServerSideProps = async (ctx) => {
-    try {
-        const cookies = nookies.get(ctx)
-        const token = await firebaseAdmin.auth().verifyIdToken(cookies.token)
-        const { uid, email } = token
-
-        return { props: { uid } }
-    } catch (err) {
-        // either the `token` cookie didn't exist or token verification failed
-        ctx.res.writeHead(302, { Location: '/login' }).end()
-        return { props: {} }
-    }
-}
-
 const Dashboard = ({ uid }) => {
     // Wait for firebaseClient to initialize db (if loading /dashboard directly), then make usePagination query
     const db = firebaseClient.apps.length && firebaseClient.firestore()
@@ -134,6 +120,20 @@ const Dashboard = ({ uid }) => {
             `}</style>
         </div>
     )
+}
+
+export const getServerSideProps = async (ctx) => {
+    try {
+        const cookies = nookies.get(ctx)
+        const token = await firebaseAdmin.auth().verifyIdToken(cookies.token)
+        const { uid, email } = token
+
+        return { props: { uid } }
+    } catch (err) {
+        // either the `token` cookie didn't exist or token verification failed
+        ctx.res.writeHead(302, { Location: '/login' }).end()
+        return { props: {} }
+    }
 }
 
 Dashboard.propTypes = {
