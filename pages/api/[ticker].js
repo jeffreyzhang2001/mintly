@@ -14,6 +14,7 @@ export default (req, res) => {
             })
         } else {
             res.status(200).json({
+                ticker: req.query.ticker,
                 open: o,
                 high: h,
                 low: l,
