@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useContext } from 'react'
-import { firebaseClient } from '../firebaseClient'
+import { firebaseClient } from '../firebase/firebaseClient'
 import { AuthContext } from '../AuthContext'
 
 const useAuth = () => {

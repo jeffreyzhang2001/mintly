@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import { firebaseClient } from '../utils/firebaseClient'
+import { firebaseClient } from '../utils/firebase/firebaseClient'
 import useAuth from '../utils/hooks/useAuth'
 
 import { Form, Input } from 'antd'
@@ -65,28 +65,32 @@ const FirebaseAuth = ({ isRegistering }) => {
                 setIsAuthenticated(true)
                 // Create database entry for user if they're registering
                 if (authResult.additionalUserInfo.isNewUser) {
+                    const initialBalance =
+                        bankrollSize === 0 ? 1000 : bankrollSize
                     const res = firebaseClient
                         .firestore()
                         .collection('users')
                         .doc(authResult.user.uid)
                         .set({
-                            uid: authResult.user.uid,
                             createdAt: firebase.firestore.Timestamp.fromDate(
                                 new Date(),
                             ),
-                            portfolios: firebaseClient.firestore.FieldValue.arrayUnion(
-                                {
-                                    createdAt: firebaseClient.firestore.Timestamp.fromDate(
-                                        new Date(),
-                                    ),
-                                    balance:
-                                        bankrollSize === 0
-                                            ? 1000
-                                            : bankrollSize,
-                                },
-                            ),
-                            defaultPortfolioIndex: 0,
-                            balance: bankrollSize === 0 ? 1000 : bankrollSize,
+                            uid: authResult.user.uid,
+                            totalBalance: initialBalance,
+                            totalEquity: 0,
+                            portfolioData: {
+                                defaultPortfolioIndex: 0,
+                                portfolios: [
+                                    {
+                                        createdAt: firebaseClient.firestore.Timestamp.fromDate(
+                                            new Date(),
+                                        ),
+                                        name: 'Portfolio 1',
+                                        balance: initialBalance,
+                                        equity: 0,
+                                    },
+                                ],
+                            },
                         })
                         .then((res) => router.push('/dashboard'))
                 }

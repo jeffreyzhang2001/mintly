@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import nookies from 'nookies'
-import { firebaseAdmin } from '../utils/firebaseAdmin'
-import { firebaseClient } from '../utils/firebaseClient'
+import { firebaseAdmin } from '../utils/firebase/firebaseAdmin'
+import { firebaseClient } from '../utils/firebase/firebaseClient'
 import usePagination from 'firestore-pagination-hook'
 import useAuth from '../utils/hooks/useAuth'
 

@@ -2,8 +2,8 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 
 import nookies from 'nookies'
-import { firebaseAdmin } from '../utils/firebaseAdmin'
-import { firebaseClient } from '../utils/firebaseClient'
+import { firebaseAdmin } from '../utils/firebase/firebaseAdmin'
+import { firebaseClient } from '../utils/firebase/firebaseClient'
 import usePagination from 'firestore-pagination-hook'
 import useAuth from '../utils/hooks/useAuth'
 
@@ -40,7 +40,8 @@ const Profile = ({ uid }) => {
         items,
         loadMore,
     } = usePagination(db && db.collection('users').where('uid', '==', uid))
-    const data = items?.[0]?.data()
+    const firestoreData = items?.[0]?.data()
+    const { totalBalance, totalEquity, portfolioData } = firestoreData || {}
 
     const [isAddingPortfolio, setIsAddingPortfolio] = useState(false)
     const addPortfolio = () => {
@@ -51,12 +52,20 @@ const Profile = ({ uid }) => {
             .doc(uid)
             .set(
                 {
-                    portfolios: firebaseClient.firestore.FieldValue.arrayUnion({
-                        createdAt: firebaseClient.firestore.Timestamp.fromDate(
-                            new Date(),
+                    portfolioData: {
+                        portfolios: firebaseClient.firestore.FieldValue.arrayUnion(
+                            {
+                                createdAt: firebaseClient.firestore.Timestamp.fromDate(
+                                    new Date(),
+                                ),
+                                name: `Portfolio ${
+                                    portfolioData.portfolios.length + 1
+                                }`,
+                                balance: 10000,
+                                equity: 0,
+                            },
                         ),
-                        balance: 10000,
-                    }),
+                    },
                 },
                 { merge: true },
             )
@@ -72,9 +81,11 @@ const Profile = ({ uid }) => {
             .doc(uid)
             .set(
                 {
-                    portfolios: data.portfolios.filter(
-                        (portfolio, index) => index !== toDeleteIndex,
-                    ),
+                    portfolioData: {
+                        portfolios: portfolioData.portfolios.filter(
+                            (portfolio, index) => index !== toDeleteIndex,
+                        ),
+                    },
                 },
                 { merge: true },
             )
@@ -90,7 +101,9 @@ const Profile = ({ uid }) => {
             .doc(uid)
             .set(
                 {
-                    defaultPortfolioIndex: newDefaultIndex,
+                    portfolioData: {
+                        defaultPortfolioIndex: newDefaultIndex,
+                    },
                 },
                 { merge: true },
             )
@@ -111,8 +124,8 @@ const Profile = ({ uid }) => {
                             />
                             <div className="usertext">
                                 <h1 className="name">{displayName}</h1>
-                                {data ? (
-                                    <h2 className="total-balance">{`Total Balance: $${data.balance}`}</h2>
+                                {totalBalance ? (
+                                    <h2 className="total-balance">{`Total Balance: $${totalBalance}`}</h2>
                                 ) : (
                                     <h2>
                                         <Skeleton />
@@ -144,107 +157,118 @@ const Profile = ({ uid }) => {
                             </Button>
                         </div>
                         <Divider className="divider" />
-                        {data ? (
+                        {portfolioData ? (
                             <div className="portfolios">
-                                {data.portfolios.map((portfolio, index) => {
-                                    const isDefault =
-                                        index === data.defaultPortfolioIndex
-                                    return (
-                                        <div
-                                            className="portfolio-container"
-                                            key={index}
-                                        >
-                                            <div>
-                                                <h1>{`Portfolio ${index + 1}${
-                                                    isDefault
-                                                        ? ' (Default)'
-                                                        : ''
-                                                }`}</h1>
-                                                <h2>
-                                                    Total Value:{' '}
-                                                    <span>
-                                                        ${portfolio.balance}
-                                                    </span>
-                                                </h2>
-                                                <h2>
-                                                    Total Equity:{' '}
-                                                    <span>
-                                                        ${portfolio.balance}
-                                                    </span>
-                                                </h2>
-                                                <h2>
-                                                    Total Cash:{' '}
-                                                    <span>
-                                                        ${portfolio.balance}
-                                                    </span>
-                                                </h2>
-                                            </div>
+                                {portfolioData.portfolios.map(
+                                    (portfolio, index) => {
+                                        const {
+                                            createdAt,
+                                            name,
+                                            balance,
+                                            equity,
+                                        } = portfolio
+                                        const isDefault =
+                                            portfolioData.defaultPortfolioIndex ===
+                                            index
+
+                                        return (
                                             <div
-                                                className={cn(
-                                                    'buttons-container',
-                                                    'portfolio-buttons',
-                                                )}
+                                                className="portfolio-container"
+                                                key={index}
                                             >
-                                                {!isDefault && (
-                                                    <>
-                                                        <Button
-                                                            className="destructive-button"
-                                                            onClick={() => {
-                                                                Modal.confirm({
-                                                                    title:
-                                                                        'Delete Portfolio',
-                                                                    icon: (
-                                                                        <ExclamationCircleOutlined />
-                                                                    ),
-                                                                    content: `Are you sure you want to delete this portfolio?`,
-                                                                    centered: true,
-                                                                    maskClosable: true,
-                                                                    okText:
-                                                                        'Delete',
-                                                                    okButtonProps: {
-                                                                        className:
-                                                                            'destructive-button',
-                                                                    },
-                                                                    onOk: () =>
-                                                                        deletePortfolio(
-                                                                            index,
-                                                                        ),
-                                                                    cancelText:
-                                                                        'Cancel',
-                                                                    cancelButtonProps: {
-                                                                        className:
-                                                                            'modal-cancel-button',
-                                                                        type:
-                                                                            'primary',
-                                                                    },
-                                                                })
-                                                            }}
-                                                            disabled={isDefault}
-                                                            type="primary"
-                                                        >
-                                                            Delete Portfolio
-                                                        </Button>
-                                                        <Button
-                                                            className={cn(
-                                                                'primary-button',
-                                                                'make-default-button',
-                                                            )}
-                                                            onClick={() =>
-                                                                makeDefault(
-                                                                    index,
-                                                                )
-                                                            }
-                                                            loading={false}
-                                                            type="primary"
-                                                        >
-                                                            Make Default
-                                                        </Button>
-                                                    </>
-                                                )}
+                                                <div>
+                                                    <h1>
+                                                        {name}
+                                                        {isDefault
+                                                            ? ' (Default)'
+                                                            : ''}
+                                                    </h1>
+                                                    <h2>
+                                                        Total Value:{' '}
+                                                        <span>
+                                                            ${balance + equity}
+                                                        </span>
+                                                    </h2>
+                                                    <h2>
+                                                        Total Equity:{' '}
+                                                        <span>${equity}</span>
+                                                    </h2>
+                                                    <h2>
+                                                        Total Cash:{' '}
+                                                        <span>${balance}</span>
+                                                    </h2>
+                                                </div>
+                                                <div
+                                                    className={cn(
+                                                        'buttons-container',
+                                                        'portfolio-buttons',
+                                                    )}
+                                                >
+                                                    {!isDefault && (
+                                                        <>
+                                                            <Button
+                                                                className="destructive-button"
+                                                                onClick={() => {
+                                                                    Modal.confirm(
+                                                                        {
+                                                                            title:
+                                                                                'Delete Portfolio',
+                                                                            icon: (
+                                                                                <ExclamationCircleOutlined />
+                                                                            ),
+                                                                            content: `Are you sure you want to delete this portfolio?`,
+                                                                            centered: true,
+                                                                            maskClosable: true,
+                                                                            okText:
+                                                                                'Delete',
+                                                                            okButtonProps: {
+                                                                                className:
+                                                                                    'destructive-button',
+                                                                            },
+                                                                            onOk: () =>
+                                                                                deletePortfolio(
+                                                                                    index,
+                                                                                ),
+                                                                            cancelText:
+                                                                                'Cancel',
+                                                                            cancelButtonProps: {
+                                                                                className:
+                                                                                    'modal-cancel-button',
+                                                                                type:
+                                                                                    'primary',
+                                                                            },
+                                                                        },
+                                                                    )
+                                                                }}
+                                                                disabled={
+                                                                    isDefault
+                                                                }
+                                                                type="primary"
+                                                            >
+                                                                Delete Portfolio
+                                                            </Button>
+                                                            <Button
+                                                                className={cn(
+                                                                    'primary-button',
+                                                                    'make-default-button',
+                                                                )}
+                                                                onClick={() =>
+                                                                    makeDefault(
+                                                                        index,
+                                                                    )
+                                                                }
+                                                                loading={false}
+                                                                type="primary"
+                                                            >
+                                                                Make Default
+                                                            </Button>
+                                                        </>
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
-                                    )
-                                })}
+                                        )
+                                    },
+                                )}
                             </div>
                         ) : (
                             [...Array(3)].map((x, i) => (
