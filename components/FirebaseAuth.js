@@ -7,26 +7,9 @@ import 'firebase/auth'
 import { firebaseClient } from '../utils/firebase/firebaseClient'
 import useAuth from '../utils/hooks/useAuth'
 
-import { Form, Input } from 'antd'
-import HashLoader from 'react-spinners/HashLoader'
+import CircleLoader from 'react-spinners/CircleLoader'
 
-const BankrollSizeInput = ({ bankrollSize, onChange }) => {
-    return (
-        <Form.Item>
-            <Input
-                value={bankrollSize}
-                maxLength="5"
-                bordered="false"
-                onChange={onChange}
-            />
-        </Form.Item>
-    )
-}
-
-BankrollSizeInput.propTypes = {
-    bankrollSize: PropTypes.number.isRequired,
-    onChange: PropTypes.func.isRequired,
-}
+import BankrollSizeInput from '../components/BankrollSizeInput'
 
 const FirebaseAuth = ({ isRegistering }) => {
     const { user } = useAuth()
@@ -39,16 +22,6 @@ const FirebaseAuth = ({ isRegistering }) => {
     const router = useRouter()
 
     const [bankrollSize, setBankrollSize] = useState(50000)
-    const onChange = (e) => {
-        const newValue = parseInt(e.target.value)
-        if (Number.isNaN(newValue)) {
-            setBankrollSize(0)
-            return
-        } else if (newValue < 0) {
-            return
-        }
-        setBankrollSize(Number(newValue))
-    }
 
     const firebaseAuthConfig = {
         signInFlow: 'popup',
@@ -130,7 +103,7 @@ const FirebaseAuth = ({ isRegistering }) => {
                                 $
                                 <BankrollSizeInput
                                     bankrollSize={bankrollSize}
-                                    onChange={onChange}
+                                    onChange={setBankrollSize}
                                 />
                                 for you)
                             </div>
@@ -151,7 +124,7 @@ const FirebaseAuth = ({ isRegistering }) => {
             ) : (
                 <div>
                     <h1 className="firebase-auth-container">Logging In...</h1>
-                    <HashLoader
+                    <CircleLoader
                         css={`
                             display: block;
                             padding-top: 300px;
