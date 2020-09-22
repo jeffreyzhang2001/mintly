@@ -19,6 +19,7 @@
     "firebase-admin": "^8.12.1",
     "firestore-pagination-hook": "^1.0.0",
     "framer-motion": "^2.6.13",
+    "lodash": "^4.17.20",
     "next": "latest",
     "nookies": "^2.4.0",
     "nprogress": "^0.2.0",

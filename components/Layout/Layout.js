@@ -24,6 +24,10 @@ const Layout = ({ children }) => {
                         margin-left: -30%;
                         padding-right: 10px;
                     }
+
+                    .skeleton-container {
+                        display: none;
+                    }
                 `}
             </style>
         </div>

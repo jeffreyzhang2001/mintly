@@ -3,9 +3,9 @@ import { useState } from 'react'
 import axios from 'axios'
 
 import cn from 'classnames'
-import { Button, AutoComplete } from 'antd'
+import { AutoComplete, Input } from 'antd'
 
-const SearchTicker = ({ className, onSelect }) => {
+const SearchTicker = ({ autoCompleteClassName, inputClassName, onSelect }) => {
     const [autoCompleteValue, setAutoCompleteValue] = useState('')
     const [autoCompleteData, setAutoCompleteData] = useState([])
     const handleSearch = (text) => {
@@ -45,16 +45,25 @@ const SearchTicker = ({ className, onSelect }) => {
     return (
         <>
             <AutoComplete
-                className={cn('autocomplete', className)}
-                placeholder="Search Ticker (e.g. AAPL)"
+                className={cn('autocomplete', autoCompleteClassName)}
                 options={autoCompleteData}
                 value={autoCompleteValue}
-                onChange={(text) => handleSearch(text)}
-                onSelect={(value) => {
-                    onSelect(value)
+                onSelect={(value, option) => {
+                    onSelect({
+                        symbol: value,
+                        name: option.label.props.children[1].props.children,
+                    })
+                    setAutoCompleteValue(value)
                     setAutoCompleteData([])
                 }}
-            />
+            >
+                <Input
+                    className={inputClassName}
+                    size="large"
+                    placeholder="Search for symbols or companies (e.g. AAPL)"
+                    onChange={(e) => handleSearch(e.target.value)}
+                />
+            </AutoComplete>
             <style jsx>{`
                 :global(.autocomplete) {
                     width: 100%;
@@ -68,7 +77,8 @@ const SearchTicker = ({ className, onSelect }) => {
 }
 
 SearchTicker.propTypes = {
-    className: PropTypes.string,
+    autoCompleteClassName: PropTypes.string,
+    inputClassName: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
 }
 

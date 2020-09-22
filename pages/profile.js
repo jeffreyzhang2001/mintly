@@ -393,9 +393,6 @@ const Profile = ({ uid }) => {
                     :global(.inject-money-button) {
                         margin-top: 0.5em;
                     }
-                    .skeleton-container {
-                        display: none;
-                    }
                 }
             `}</style>
         </div>

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 
+import { isEmpty } from 'lodash'
 import nookies from 'nookies'
 import { firebaseAdmin } from '../utils/firebase/firebaseAdmin'
 import useFirestore from '../utils/hooks/useFirestore'
@@ -14,7 +15,7 @@ import {
     StarOutlined,
     StarFilled,
 } from '@ant-design/icons'
-import Skeleton from 'react-loading-skeleton'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import SearchTicker from '../components/SearchTicker'
 
 const Dashboard = ({ uid }) => {
@@ -47,9 +48,12 @@ const Dashboard = ({ uid }) => {
     }, [isLoading])
     const isDefault = activePortfolioIndex === defaultPortfolioIndex
 
-    // portfolio, history
+    // setSelectedTicker is handled by <SearchTicker /> component
+    const [selectedTicker, setSelectedTicker] = useState({})
+    const hasTicker = !isEmpty(selectedTicker)
+
+    // portfolio, trade, history
     const [activeView, setActiveView] = useState('portfolio')
-    const [selectedTicker, setSelectedTicker] = useState()
 
     return (
         <div className="dashboard">
@@ -167,10 +171,6 @@ const Dashboard = ({ uid }) => {
                                 </Button>
                             </div>
                         </div>
-                        <SearchTicker
-                            className="ticker-autocomplete"
-                            onSelect={setSelectedTicker}
-                        />
                         <div className="section-title-row">
                             <a
                                 className="tab"
@@ -182,6 +182,18 @@ const Dashboard = ({ uid }) => {
                                     })}
                                 >
                                     Portfolio
+                                </h1>
+                            </a>
+                            <a
+                                className="tab"
+                                onClick={() => setActiveView('trade')}
+                            >
+                                <h1
+                                    className={cn('tab', {
+                                        activeTab: activeView === 'trade',
+                                    })}
+                                >
+                                    Trade
                                 </h1>
                             </a>
                             <a
@@ -198,6 +210,52 @@ const Dashboard = ({ uid }) => {
                             </a>
                         </div>
                         <Divider className="divider" />
+                        <div className="views-container">
+                            {activeView === 'portfolio' ? (
+                                <div>
+                                    <div className="equity-row">portfolio</div>
+                                    <div className="equity-row">portfolio</div>
+                                </div>
+                            ) : activeView === 'trade' ? (
+                                <div className="trade-view">
+                                    <SearchTicker
+                                        autoCompleteClassName="ticker-autocomplete"
+                                        onSelect={setSelectedTicker}
+                                    />
+                                    <SkeletonTheme
+                                        color="#AFBFD4"
+                                        highlightColor="#AFBFD4"
+                                    >
+                                        <div className="stock-info-background">
+                                            <div className="stock-info-container">
+                                                <h1 className="account-balance">
+                                                    {hasTicker
+                                                        ? selectedTicker.symbol
+                                                        : 'Select a stock'}
+                                                    <span className="stock-price">
+                                                        $
+                                                    </span>
+                                                </h1>
+                                                <h2 className="">
+                                                    {hasTicker ? (
+                                                        selectedTicker.name
+                                                    ) : (
+                                                        <Skeleton
+                                                            style={{
+                                                                color: 'white',
+                                                            }}
+                                                            count={3}
+                                                        />
+                                                    )}
+                                                </h2>
+                                            </div>
+                                        </div>
+                                    </SkeletonTheme>
+                                </div>
+                            ) : (
+                                <h2>History is coming soon!</h2>
+                            )}
+                        </div>
                     </div>
                 )}
             </main>
@@ -247,22 +305,40 @@ const Dashboard = ({ uid }) => {
                     margin-left: auto;
                 }
 
-                :global(.ticker-autocomplete) {
-                    margin-top: 10px;
-                }
-                
                 .section-title-row {
                     display: flex;
                     align-items: center;
-                    margin-top: 50px;
+                    margin-top: 20px;
                     margin-right: auto;
                 }
                 .tab:not(:first-of-type) {
-                    margin-left: 10px;
+                    margin-left: 12px;
                 }
                 .activeTab,
                 .tab:hover {
                     color: gray;
+                }
+
+                .trade-view {
+                    height: 60vh;
+                }
+                :global(.ticker-autocomplete) {
+                    margin-top: 2px;
+                }
+                .stock-info-background {
+                    margin-top: 20px;
+                    height: 25%;
+                    border-radius: 15px;
+                    background-color: #88a1bf;
+                    color: black;
+                }
+                .stock-info-container {
+                    padding: 10px 20px;
+                }
+                .stock-price {
+                    margin-left: 10px;
+                    font-size: 25px;
+                    color: #eeeeee;
                 }
 
                 :global(.divider) {
@@ -312,9 +388,6 @@ const Dashboard = ({ uid }) => {
                 h1 {
                     font-size: 35px;
                 }
-                h2 {
-                    color: #c7c3bd;
-                }
 
                 @media only screen and (max-width: 600px) {
                     main {
@@ -342,9 +415,6 @@ const Dashboard = ({ uid }) => {
                     }
                     :global(.inject-money-button) {
                         margin-top: 0;
-                    }
-                    .skeleton-container {
-                        display: none;
                     }
                 }
             `}</style>
