@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { Button, AutoComplete } from 'antd'
 import axios from 'axios'
 
-const SearchTicker = ({ onSelect }) => {
+import cn from 'classnames'
+import { Button, AutoComplete } from 'antd'
+
+const SearchTicker = ({ className, onSelect }) => {
     const [autoCompleteValue, setAutoCompleteValue] = useState('')
     const [autoCompleteData, setAutoCompleteData] = useState([])
     const handleSearch = (text) => {
@@ -43,7 +45,7 @@ const SearchTicker = ({ onSelect }) => {
     return (
         <>
             <AutoComplete
-                className="autocomplete"
+                className={cn('autocomplete', className)}
                 placeholder="Search Ticker (e.g. AAPL)"
                 options={autoCompleteData}
                 value={autoCompleteValue}
@@ -66,6 +68,7 @@ const SearchTicker = ({ onSelect }) => {
 }
 
 SearchTicker.propTypes = {
+    className: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
 }
 

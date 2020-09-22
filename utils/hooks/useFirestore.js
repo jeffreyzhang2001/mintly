@@ -5,7 +5,7 @@ import usePagination from 'firestore-pagination-hook'
 const useFirestore = (uid) => {
     const db = firebaseClient.apps.length && firebaseClient.firestore()
     const {
-        loading,
+        loading: isLoading,
         loadingError,
         loadingMore,
         loadingMoreError,
@@ -97,7 +97,6 @@ const useFirestore = (uid) => {
     }
 
     const makeDefault = (newDefaultIndex) => {
-
         const res = firebaseClient
             .firestore()
             .collection('users')
@@ -136,6 +135,7 @@ const useFirestore = (uid) => {
     }
 
     return {
+        isLoading,
         userInfo,
         addPortfolio,
         deletePortfolio,
