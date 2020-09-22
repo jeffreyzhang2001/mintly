@@ -1,13 +1,29 @@
 import Link from 'next/link'
+import { useEffect } from 'react'
 
 import useAuth from '../utils/hooks/useAuth'
 
-import { Button } from 'antd'
+import { Button, notification } from 'antd'
 import TextLoop from 'react-text-loop'
 import Twemoji from 'react-twemoji'
 
 const Index = () => {
     const { user } = useAuth()
+
+    useEffect(() => {
+        notification['info']({
+            message: 'Hi, thanks for visiting!',
+            description:
+                'Mintly is actively being developed. New features are added every day!',
+            duration: 4,
+            placement: 'bottomRight',
+            icon: (
+                <Twemoji options={{ className: 'notification-emoji' }}>
+                    🍃
+                </Twemoji>
+            ),
+        })
+    }, [])
 
     return (
         <div className="container">
