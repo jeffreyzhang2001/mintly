@@ -3,8 +3,7 @@ import { useState } from 'react'
 
 import nookies from 'nookies'
 import { firebaseAdmin } from '../utils/firebase/firebaseAdmin'
-import { firebaseClient } from '../utils/firebase/firebaseClient'
-import usePagination from 'firestore-pagination-hook'
+import useFirestore from '../utils/hooks/useFirestore'
 import useAuth from '../utils/hooks/useAuth'
 
 import cn from 'classnames'
@@ -22,102 +21,20 @@ const Profile = ({ uid }) => {
     const { user, logout } = useAuth()
     const { displayName, photoURL } = user || {}
 
-    const db = firebaseClient.apps.length && firebaseClient.firestore()
     const {
-        loading,
-        loadingError,
-        loadingMore,
-        loadingMoreError,
-        hasMore,
-        items,
-        loadMore,
-    } = usePagination(db && db.collection('users').where('uid', '==', uid))
-    const firestoreData = items?.[0]?.data()
-    const { totalBalance, totalEquity, portfolioData } = firestoreData || {}
-
-    const addPortfolio = () => {
-        const res = firebaseClient
-            .firestore()
-            .collection('users')
-            .doc(uid)
-            .set(
-                {
-                    portfolioData: {
-                        portfolios: firebaseClient.firestore.FieldValue.arrayUnion(
-                            {
-                                createdAt: firebaseClient.firestore.Timestamp.fromDate(
-                                    new Date(),
-                                ),
-                                name: `Portfolio ${
-                                    portfolioData.portfolios.length + 1
-                                }`,
-                                balance: 10000,
-                                equity: 0,
-                            },
-                        ),
-                    },
-                },
-                { merge: true },
-            )
-            .then((res) => {})
-    }
-
-    const deletePortfolio = (toDeleteIndex) => {
-        const res = firebaseClient
-            .firestore()
-            .collection('users')
-            .doc(uid)
-            .set(
-                {
-                    portfolioData: {
-                        portfolios: portfolioData.portfolios.filter(
-                            (portfolio, index) => index !== toDeleteIndex,
-                        ),
-                    },
-                },
-                { merge: true },
-            )
-            .then((res) => {})
-    }
-
-    const makeDefault = (newDefaultIndex) => {
-        const res = firebaseClient
-            .firestore()
-            .collection('users')
-            .doc(uid)
-            .set(
-                {
-                    portfolioData: {
-                        defaultPortfolioIndex: newDefaultIndex,
-                    },
-                },
-                { merge: true },
-            )
-            .then((res) => {})
-    }
-
-    const injectMoney = (index, amount) => {
-        let currentPortfolios = [...portfolioData.portfolios]
-        currentPortfolios[index] = {
-            ...currentPortfolios[index],
-            balance: currentPortfolios[index].balance + amount,
-        }
-
-        const res = firebaseClient
-            .firestore()
-            .collection('users')
-            .doc(uid)
-            .set(
-                {
-                    totalBalance: totalBalance + amount,
-                    portfolioData: {
-                        portfolios: currentPortfolios,
-                    },
-                },
-                { merge: true },
-            )
-            .then((res) => {})
-    }
+        userInfo,
+        addPortfolio,
+        deletePortfolio,
+        makeDefault,
+        injectMoney,
+    } = useFirestore(uid)
+    const {
+        createdAt,
+        totalBalance,
+        totalEquity,
+        accountValue,
+        portfolioData,
+    } = userInfo || {}
 
     return (
         <div className="profile">

@@ -76,8 +76,6 @@ const FirebaseAuth = ({ isRegistering }) => {
                                 new Date(),
                             ),
                             uid: authResult.user.uid,
-                            totalBalance: initialBalance,
-                            totalEquity: 0,
                             portfolioData: {
                                 defaultPortfolioIndex: 0,
                                 portfolios: [

@@ -5,26 +5,26 @@ import axios from 'axios'
 import nookies from 'nookies'
 import { firebaseAdmin } from '../utils/firebase/firebaseAdmin'
 import { firebaseClient } from '../utils/firebase/firebaseClient'
-import usePagination from 'firestore-pagination-hook'
-import useAuth from '../utils/hooks/useAuth'
+import useFirestore from '../utils/hooks/useFirestore'
 
 import { Button, AutoComplete } from 'antd'
 import Skeleton from 'react-loading-skeleton'
 
 const Dashboard = ({ uid }) => {
-    // Wait for firebaseClient to initialize db (if loading /dashboard directly), then make usePagination query
-    const db = firebaseClient.apps.length && firebaseClient.firestore()
     const {
-        loading,
-        loadingError,
-        loadingMore,
-        loadingMoreError,
-        hasMore,
-        items,
-        loadMore,
-    } = usePagination(db && db.collection('users').where('uid', '==', uid))
-    const firestoreData = items?.[0]?.data()
-    const { totalBalance, totalEquity, portfolioData } = firestoreData || {}
+        userInfo,
+        addPortfolio,
+        deletePortfolio,
+        makeDefault,
+        injectMoney,
+    } = useFirestore(uid)
+    const {
+        createdAt,
+        totalBalance,
+        totalEquity,
+        accountValue,
+        portfolioData,
+    } = userInfo || {}
 
     const [selectedTicker, setSelectedTicker] = useState()
     const [autoCompleteValue, setAutoCompleteValue] = useState('')
