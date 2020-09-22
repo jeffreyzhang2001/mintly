@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash'
 import nookies from 'nookies'
 import { firebaseAdmin } from '../utils/firebase/firebaseAdmin'
 import useFirestore from '../utils/hooks/useFirestore'
+import useSWR from 'swr'
 
 import cn from 'classnames'
 import { Button, Select, Modal, Divider } from 'antd'
@@ -16,7 +17,7 @@ import {
     StarFilled,
 } from '@ant-design/icons'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
-import SearchTicker from '../components/SearchTicker'
+import SearchTicker from '../components/SearchStock'
 
 const Dashboard = ({ uid }) => {
     const {
@@ -48,9 +49,9 @@ const Dashboard = ({ uid }) => {
     }, [isLoading])
     const isDefault = activePortfolioIndex === defaultPortfolioIndex
 
-    // setSelectedTicker is handled by <SearchTicker /> component
-    const [selectedTicker, setSelectedTicker] = useState({})
-    const hasTicker = !isEmpty(selectedTicker)
+    // setSelectedStock is handled by <SearchTicker /> component
+    const [selectedStock, setSelectedStock] = useState({})
+    const hasTicker = !isEmpty(selectedStock)
 
     // portfolio, trade, history
     const [activeView, setActiveView] = useState('portfolio')
@@ -220,7 +221,7 @@ const Dashboard = ({ uid }) => {
                                 <div className="trade-view">
                                     <SearchTicker
                                         autoCompleteClassName="ticker-autocomplete"
-                                        onSelect={setSelectedTicker}
+                                        onSelect={setSelectedStock}
                                     />
                                     <SkeletonTheme
                                         color="#AFBFD4"
@@ -230,7 +231,7 @@ const Dashboard = ({ uid }) => {
                                             <div className="stock-info-container">
                                                 <h1 className="account-balance">
                                                     {hasTicker
-                                                        ? selectedTicker.symbol
+                                                        ? selectedStock.ticker
                                                         : 'Select a stock'}
                                                     <span className="stock-price">
                                                         $
@@ -238,7 +239,7 @@ const Dashboard = ({ uid }) => {
                                                 </h1>
                                                 <h2 className="">
                                                     {hasTicker ? (
-                                                        selectedTicker.name
+                                                        selectedStock.name
                                                     ) : (
                                                         <Skeleton
                                                             style={{

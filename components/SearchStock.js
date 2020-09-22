@@ -5,7 +5,7 @@ import axios from 'axios'
 import cn from 'classnames'
 import { AutoComplete, Input } from 'antd'
 
-const SearchTicker = ({ autoCompleteClassName, inputClassName, onSelect }) => {
+const SearchStock = ({ autoCompleteClassName, inputClassName, onSelect }) => {
     const [autoCompleteValue, setAutoCompleteValue] = useState('')
     const [autoCompleteData, setAutoCompleteData] = useState([])
     const handleSearch = (text) => {
@@ -50,7 +50,7 @@ const SearchTicker = ({ autoCompleteClassName, inputClassName, onSelect }) => {
                 value={autoCompleteValue}
                 onSelect={(value, option) => {
                     onSelect({
-                        symbol: value,
+                        ticker: value,
                         name: option.label.props.children[1].props.children,
                     })
                     setAutoCompleteValue(value)
@@ -76,10 +76,10 @@ const SearchTicker = ({ autoCompleteClassName, inputClassName, onSelect }) => {
     )
 }
 
-SearchTicker.propTypes = {
+SearchStock.propTypes = {
     autoCompleteClassName: PropTypes.string,
     inputClassName: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
 }
 
-export default SearchTicker
+export default SearchStock
