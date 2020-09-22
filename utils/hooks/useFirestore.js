@@ -82,6 +82,10 @@ const useFirestore = (uid) => {
             .set(
                 {
                     portfolioData: {
+                        defaultPortfolioIndex:
+                            portfolioData.defaultPortfolioIndex > toDeleteIndex
+                                ? portfolioData.defaultPortfolioIndex - 1
+                                : portfolioData.defaultPortfolioIndex,
                         portfolios: portfolioData.portfolios.filter(
                             (portfolio, index) => index !== toDeleteIndex,
                         ),
@@ -93,6 +97,7 @@ const useFirestore = (uid) => {
     }
 
     const makeDefault = (newDefaultIndex) => {
+
         const res = firebaseClient
             .firestore()
             .collection('users')
