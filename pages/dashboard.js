@@ -224,24 +224,11 @@ const Dashboard = ({ uid }) => {
                                 <div>
                                     <div className="stock-info-background">
                                         <div className="stock-info-container">
-                                            <h1 className="account-balance">
+                                            <h1 className="stock-ticker">
                                                 You don&apos;t have any stocks
                                                 yet.
-                                                {/* <span className="stock-price">
-                                                    {priceData?.current || (
-                                                        <Skeleton width={75} />
-                                                    )}
-                                                </span> */}
                                             </h1>
                                             <h2 className="">
-                                                {/* {selectedStock?.name || (
-                                                    <Skeleton
-                                                        style={{
-                                                            color: 'white',
-                                                        }}
-                                                        count={3}
-                                                    />
-                                                )} */}
                                                 Buy some in the Trade tab!
                                             </h2>
                                         </div>
@@ -261,22 +248,31 @@ const Dashboard = ({ uid }) => {
                                     >
                                         <div className="stock-info-background">
                                             <div className="stock-info-container">
-                                                <h1 className="account-balance">
+                                                <h1 className="stock-ticker">
                                                     {selectedStock?.ticker ||
                                                         'Select a stock'}
-                                                    {isStockSelected && (
+                                                    {!isEmpty(priceData) ? (
+                                                        <>
+                                                            <span className="stock-price">
+                                                                {
+                                                                    priceData.current
+                                                                }{' '}
+                                                            </span>
+                                                            <span className="percent-change">
+                                                                (
+                                                                {
+                                                                    priceData.percentChange
+                                                                }
+                                                                %)
+                                                            </span>
+                                                        </>
+                                                    ) : isStockSelected ? (
                                                         <span className="stock-price">
-                                                            {!isEmpty(
-                                                                priceData,
-                                                            ) ? (
-                                                                `$${priceData.current} (${priceData.percentChange})`
-                                                            ) : (
-                                                                <Skeleton
-                                                                    width={75}
-                                                                />
-                                                            )}
+                                                            <Skeleton
+                                                                width={75}
+                                                            />
                                                         </span>
-                                                    )}
+                                                    ) : null}
                                                 </h1>
                                                 <h2 className="">
                                                     {selectedStock?.name || (
@@ -376,15 +372,25 @@ const Dashboard = ({ uid }) => {
                 .stock-info-container {
                     padding: 10px 20px;
                 }
+                .stock-ticker {
+                    font-size: 30px;
+                    font-weight: 700;
+                }
+                .stock-price,
+                .percent-change {
+                    font-weight: 400;
+                }
                 .stock-price {
-                    margin-left: 10px;
+                    margin-left: 15px;
+                    color: #E5E1E6;
+                }
+                .percent-change {
                     font-size: 25px;
                     color: ${
                         priceData?.current > priceData?.prevClose
                             ? 'palegreen'
                             : 'indianred'
                     };
-                    /color: #eeeeee;
                 }
 
                 :global(.divider) {
