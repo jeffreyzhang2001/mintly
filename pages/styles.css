@@ -45,3 +45,11 @@ h1, h2, h3, h4 {
     background-color: var(--dark-primary-color) !important;
     border-color: var(--dark-primary-color) !important;
 }
+
+[ant-click-animating-without-extra-node]:after {
+    -webkit-animation: none !important;
+    -moz-animation: none !important;
+    -o-animation: none !important;
+    -ms-animation: none !important;
+    animation: none !important;
+}

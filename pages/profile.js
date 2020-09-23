@@ -181,7 +181,7 @@ const Profile = ({ uid }) => {
                                                             }}
                                                             disabled={isDefault}
                                                         >
-                                                            Delete Portfolio
+                                                            Delete
                                                         </Button>
                                                     )}
                                                     <Button

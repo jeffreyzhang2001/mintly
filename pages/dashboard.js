@@ -238,9 +238,9 @@ const Dashboard = ({ uid }) => {
                                         onSelect={setSelectedStock}
                                     />
                                     <SkeletonTheme
-                                        color="#afbfd4"
+                                        color="#e2e2e2"
                                         highlightColor={
-                                            stockData ? '#d8e0e9' : '#afbfd4'
+                                            stockData ? '#8e9eab' : '#e2e2e2'
                                         }
                                     >
                                         <div className="stock-info-background">
@@ -417,9 +417,10 @@ const Dashboard = ({ uid }) => {
                     margin-top: 20px;
                     height: 25%;
                     border-radius: 15px;
-                    /background-color: #88a1bf;
-                    background-image: linear-gradient(to left top, #6F9B8A , #88a1bf);
                     color: black;
+                    background: #f3904f;
+                    background: linear-gradient(to left, #f3904f, #3b4371);
+                    background: -webkit-linear-gradient(to left, #f3904f, #3b4371);
                 }
                 .inner-card-container {
                     padding: 10px 20px;
@@ -463,20 +464,23 @@ const Dashboard = ({ uid }) => {
                     border-color: white;
                 }
 
-                :global(.primary-button, .destructive-button, .modal-cancel-button) {
-                    height: 40px;
-                    border-radius: 8px;
-                }
                 :global(.primary-button) {
                     margin-left: 12px;
                 }
                 :global(.destructive-button) {
                     background-color: #ff7e67 !important;
-                    border-color: #ff7e67 !important;
+                }
+                :global(.primary-button):hover,
+                :global(.destructive-button):hover {
+                    border-color: black !important;
                 }
                 :global(.destructive-button):hover {
                     background-color: #931a25 !important;
-                    border-color: #931a25 !important;
+                }
+                :global(.primary-button, .destructive-button, .modal-cancel-button) {
+                    height: 40px;
+                    border-radius: 8px;
+                    border: solid 1px black !important;
                 }
 
                 :global(.modal-cancel-button) {
