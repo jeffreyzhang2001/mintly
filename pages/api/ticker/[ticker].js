@@ -70,7 +70,9 @@ export default async (req, res) => {
                     promiseError = error
                     resolve()
                 } else {
-                    companyNews = uniqByProp(data.slice(0, 15), 'headline')
+                    if (data?.length) {
+                        companyNews = uniqByProp(data.slice(0, 15), 'headline')
+                    }
                     resolve()
                 }
             },
