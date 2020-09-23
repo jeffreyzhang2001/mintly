@@ -12,11 +12,13 @@ const Index = () => {
 
     useEffect(() => {
         notification['info']({
+            key: '0',
             message: 'Hi, thanks for visiting!',
             description:
                 'Mintly is actively being developed. New features are added every day!',
             duration: 4,
             placement: 'bottomRight',
+            onClick: () => notification.close('0'),
             icon: (
                 <Twemoji options={{ className: 'notification-emoji' }}>
                     🍃
