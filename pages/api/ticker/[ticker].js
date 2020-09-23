@@ -15,21 +15,22 @@ export default async (req, res) => {
         .split('T')[0]
 
     let promiseError
-    let quote
+    let priceData
     const quotePromise = new Promise((resolve, reject) => {
         finnhubClient.quote(ticker, (error, data, response) => {
-            const { o, h, l, c, pc } = data
+            const { o, h, l, c, pc } = data || {}
             if ((!o && !h && !l && !c && !pc) || error) {
                 promiseError = true
                 resolve()
             } else {
-                quote = {
-                    ticker,
+                priceData = {
                     open: o,
                     high: h,
                     low: l,
                     current: c,
                     prevClose: pc,
+                    dollarChange: c - pc,
+                    percentChange: (((c - pc) / pc) * 100).toFixed(2),
                 }
                 resolve()
             }
@@ -74,6 +75,6 @@ export default async (req, res) => {
             message: 'Ticker not found',
         })
     } else {
-        res.status(200).json({ quote, recommendationTrends, companyNews })
+        res.status(200).json({ priceData, recommendationTrends, companyNews })
     }
 }

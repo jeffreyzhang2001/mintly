@@ -6,6 +6,7 @@ import nookies from 'nookies'
 import { firebaseAdmin } from '../utils/firebase/firebaseAdmin'
 import useFirestore from '../utils/hooks/useFirestore'
 import useSWR from 'swr'
+import axios from 'axios'
 
 import cn from 'classnames'
 import { Button, Select, Modal, Divider } from 'antd'
@@ -49,9 +50,16 @@ const Dashboard = ({ uid }) => {
     }, [isLoading])
     const isDefault = activePortfolioIndex === defaultPortfolioIndex
 
-    // setSelectedStock is handled by <SearchTicker /> component
+    // setSelectedStock is handled by <SearchStock /> component
     const [selectedStock, setSelectedStock] = useState({})
-    const hasTicker = !isEmpty(selectedStock)
+    const isStockSelected = !isEmpty(selectedStock)
+    const {
+        data: stockData,
+        error,
+    } = useSWR(`/api/ticker/${selectedStock?.ticker}`, (url) =>
+        axios(url).then((response) => response.data),
+    )
+    const { priceData, recommendationTrends, companyNews } = stockData || {}
 
     // portfolio, trade, history
     const [activeView, setActiveView] = useState('portfolio')
@@ -214,8 +222,30 @@ const Dashboard = ({ uid }) => {
                         <div className="views-container">
                             {activeView === 'portfolio' ? (
                                 <div>
-                                    <div className="equity-row">portfolio</div>
-                                    <div className="equity-row">portfolio</div>
+                                    <div className="stock-info-background">
+                                        <div className="stock-info-container">
+                                            <h1 className="account-balance">
+                                                You don&apos;t have any stocks
+                                                yet.
+                                                {/* <span className="stock-price">
+                                                    {priceData?.current || (
+                                                        <Skeleton width={75} />
+                                                    )}
+                                                </span> */}
+                                            </h1>
+                                            <h2 className="">
+                                                {/* {selectedStock?.name || (
+                                                    <Skeleton
+                                                        style={{
+                                                            color: 'white',
+                                                        }}
+                                                        count={3}
+                                                    />
+                                                )} */}
+                                                Buy some in the Trade tab!
+                                            </h2>
+                                        </div>
+                                    </div>
                                 </div>
                             ) : activeView === 'trade' ? (
                                 <div className="trade-view">
@@ -224,23 +254,32 @@ const Dashboard = ({ uid }) => {
                                         onSelect={setSelectedStock}
                                     />
                                     <SkeletonTheme
-                                        color="#AFBFD4"
-                                        highlightColor="#AFBFD4"
+                                        color="#afbfd4"
+                                        highlightColor={
+                                            stockData ? '#d8e0e9' : '#afbfd4'
+                                        }
                                     >
                                         <div className="stock-info-background">
                                             <div className="stock-info-container">
                                                 <h1 className="account-balance">
-                                                    {hasTicker
-                                                        ? selectedStock.ticker
-                                                        : 'Select a stock'}
-                                                    <span className="stock-price">
-                                                        $
-                                                    </span>
+                                                    {selectedStock?.ticker ||
+                                                        'Select a stock'}
+                                                    {isStockSelected && (
+                                                        <span className="stock-price">
+                                                            {!isEmpty(
+                                                                priceData,
+                                                            ) ? (
+                                                                `$${priceData.current} (${priceData.percentChange})`
+                                                            ) : (
+                                                                <Skeleton
+                                                                    width={75}
+                                                                />
+                                                            )}
+                                                        </span>
+                                                    )}
                                                 </h1>
                                                 <h2 className="">
-                                                    {hasTicker ? (
-                                                        selectedStock.name
-                                                    ) : (
+                                                    {selectedStock?.name || (
                                                         <Skeleton
                                                             style={{
                                                                 color: 'white',
@@ -330,7 +369,8 @@ const Dashboard = ({ uid }) => {
                     margin-top: 20px;
                     height: 25%;
                     border-radius: 15px;
-                    background-color: #88a1bf;
+                    /background-color: #88a1bf;
+                    background-image: linear-gradient(to left top, #6F9B8A , #88a1bf);
                     color: black;
                 }
                 .stock-info-container {
@@ -339,7 +379,12 @@ const Dashboard = ({ uid }) => {
                 .stock-price {
                     margin-left: 10px;
                     font-size: 25px;
-                    color: #eeeeee;
+                    color: ${
+                        priceData?.current > priceData?.prevClose
+                            ? 'palegreen'
+                            : 'indianred'
+                    };
+                    /color: #eeeeee;
                 }
 
                 :global(.divider) {
@@ -408,6 +453,7 @@ const Dashboard = ({ uid }) => {
                     .buttons-container,
                     .usertext,
                     h1 {
+                        font-size: 30px;
                         margin-left: 0;
                     }
                     :global(.add-portfolio-button) {
