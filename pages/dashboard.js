@@ -215,7 +215,7 @@ const Dashboard = ({ uid }) => {
                                 </h1>
                             </a>
                         </div>
-                        <Divider className="divider" />
+                        {/* <Divider className="divider" /> */}
                         <div className="views-container">
                             {activeView === 'portfolio' ? (
                                 <div>
@@ -401,19 +401,25 @@ const Dashboard = ({ uid }) => {
                     margin-top: 20px;
                     margin-right: auto;
                 }
+                .tab{
+                    color: gray;
+                }
                 .tab:not(:first-of-type) {
                     margin-left: 12px;
                 }
                 .activeTab,
                 .tab:hover {
-                    color: gray;
+                    color: white;
+                }
+                .activeTab {
+                    text-decoration: underline;
                 }
 
                 .view-container {
                     height: 60vh;
                 }
                 :global(.ticker-autocomplete) {
-                    margin-top: 2px;
+                    margin-top: 10px;
                 }
                 .stock-info-background {
                     margin-top: 20px;
