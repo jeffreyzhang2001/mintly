@@ -9,6 +9,15 @@ export default async (req, res) => {
     const api_key = finnhub.ApiClient.instance.authentications['api_key']
     api_key.apiKey = process.env.FINNHUB_API_KEY
     const finnhubClient = new finnhub.DefaultApi()
+
+    // Utils
+    const uniqByProp = (array, prop) => {
+        let seen = {}
+        return array.filter((item) => {
+            const k = item[prop]
+            return seen.hasOwnProperty(k) ? false : (seen[k] = true)
+        })
+    }
     const currentDate = new Date().toISOString().split('T')[0]
     const weekAgoDate = new Date(new Date() - 6.048e8)
         .toISOString()
@@ -61,7 +70,7 @@ export default async (req, res) => {
                     promiseError = error
                     resolve()
                 } else {
-                    companyNews = data
+                    companyNews = uniqByProp(data.slice(0, 15), 'headline')
                     resolve()
                 }
             },

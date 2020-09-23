@@ -53,11 +53,9 @@ const Dashboard = ({ uid }) => {
     // setSelectedStock is handled by <SearchStock /> component
     const [selectedStock, setSelectedStock] = useState({})
     const isStockSelected = !isEmpty(selectedStock)
-    const {
-        data: stockData,
-        error,
-    } = useSWR(`/api/ticker/${selectedStock?.ticker}`, (url) =>
-        axios(url).then((response) => response.data),
+    const { data: stockData, error } = useSWR(
+        selectedStock?.ticker ? `/api/ticker/${selectedStock?.ticker}` : null,
+        (url) => axios(url).then((response) => response.data),
     )
     const { priceData, recommendationTrends, companyNews } = stockData || {}
 
@@ -174,7 +172,6 @@ const Dashboard = ({ uid }) => {
                                     onClick={() =>
                                         injectMoney(activePortfolioIndex, 10000)
                                     }
-                                    loading={false}
                                 >
                                     + $10000
                                 </Button>
@@ -223,7 +220,7 @@ const Dashboard = ({ uid }) => {
                             {activeView === 'portfolio' ? (
                                 <div>
                                     <div className="stock-info-background">
-                                        <div className="stock-info-container">
+                                        <div className="inner-card-container">
                                             <h1 className="stock-ticker">
                                                 You don&apos;t have any stocks
                                                 yet.
@@ -235,7 +232,7 @@ const Dashboard = ({ uid }) => {
                                     </div>
                                 </div>
                             ) : activeView === 'trade' ? (
-                                <div className="trade-view">
+                                <div className="view-container">
                                     <SearchTicker
                                         autoCompleteClassName="ticker-autocomplete"
                                         onSelect={setSelectedStock}
@@ -247,45 +244,100 @@ const Dashboard = ({ uid }) => {
                                         }
                                     >
                                         <div className="stock-info-background">
-                                            <div className="stock-info-container">
-                                                <h1 className="stock-ticker">
-                                                    {selectedStock?.ticker ||
-                                                        'Select a stock'}
-                                                    {!isEmpty(priceData) ? (
-                                                        <>
+                                            <div
+                                                className={cn(
+                                                    'inner-card-container',
+                                                    'stock-card-container',
+                                                )}
+                                            >
+                                                <div style={{ width: '50%' }}>
+                                                    <h1 className="stock-ticker">
+                                                        {selectedStock?.ticker ||
+                                                            'Select a stock'}
+                                                        {priceData ? (
+                                                            <>
+                                                                <span className="stock-price">
+                                                                    {
+                                                                        priceData.current
+                                                                    }{' '}
+                                                                </span>
+                                                                <span className="percent-change">
+                                                                    (
+                                                                    {
+                                                                        priceData.percentChange
+                                                                    }
+                                                                    %)
+                                                                </span>
+                                                            </>
+                                                        ) : isStockSelected ? (
                                                             <span className="stock-price">
-                                                                {
-                                                                    priceData.current
-                                                                }{' '}
+                                                                <Skeleton
+                                                                    width={75}
+                                                                />
                                                             </span>
-                                                            <span className="percent-change">
-                                                                (
-                                                                {
-                                                                    priceData.percentChange
-                                                                }
-                                                                %)
-                                                            </span>
-                                                        </>
-                                                    ) : isStockSelected ? (
-                                                        <span className="stock-price">
+                                                        ) : null}
+                                                    </h1>
+                                                    <h2>
+                                                        {selectedStock?.name || (
                                                             <Skeleton
-                                                                width={75}
+                                                                count={3}
                                                             />
-                                                        </span>
-                                                    ) : null}
-                                                </h1>
-                                                <h2 className="">
-                                                    {selectedStock?.name || (
-                                                        <Skeleton
-                                                            style={{
-                                                                color: 'white',
-                                                            }}
-                                                            count={3}
-                                                        />
-                                                    )}
-                                                </h2>
+                                                        )}
+                                                    </h2>
+                                                </div>
+                                                {isStockSelected && (
+                                                    <div className="card-right-container">
+                                                        <Button
+                                                            className="destructive-button"
+                                                            onClick={() => {}}
+                                                            type="primary"
+                                                        >
+                                                            Sell
+                                                        </Button>
+                                                        <Button
+                                                            className={cn(
+                                                                'primary-button',
+                                                                'inject-money-button',
+                                                            )}
+                                                            type="primary"
+                                                            onClick={() => {}}
+                                                        >
+                                                            Buy
+                                                        </Button>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
+                                        {isStockSelected && companyNews && (
+                                            <div className="stock-info-background">
+                                                <div className="inner-card-container">
+                                                    <h1 className="stock-ticker">
+                                                        News
+                                                    </h1>
+                                                    {companyNews
+                                                        ?.slice(0, 3)
+                                                        ?.map(
+                                                            (
+                                                                article,
+                                                                index,
+                                                            ) => (
+                                                                <a
+                                                                    key={index}
+                                                                    href={
+                                                                        article.url
+                                                                    }
+                                                                >
+                                                                    <h2 className="headline">
+                                                                        {
+                                                                            article.headline
+                                                                        }
+                                                                    </h2>
+                                                                </a>
+                                                            ),
+                                                        )}
+                                                </div>
+                                            </div>
+                                        )}
                                     </SkeletonTheme>
                                 </div>
                             ) : (
@@ -355,7 +407,7 @@ const Dashboard = ({ uid }) => {
                     color: gray;
                 }
 
-                .trade-view {
+                .view-container {
                     height: 60vh;
                 }
                 :global(.ticker-autocomplete) {
@@ -369,8 +421,16 @@ const Dashboard = ({ uid }) => {
                     background-image: linear-gradient(to left top, #6F9B8A , #88a1bf);
                     color: black;
                 }
-                .stock-info-container {
+                .inner-card-container {
                     padding: 10px 20px;
+                }
+                .stock-card-container {
+                    display: flex;
+                }
+                .card-right-container {
+                    margin-left: auto;
+                    display: flex;
+                    align-items: center;
                 }
                 .stock-ticker {
                     font-size: 30px;
@@ -391,6 +451,9 @@ const Dashboard = ({ uid }) => {
                             ? 'palegreen'
                             : 'indianred'
                     };
+                }
+                .headline {
+                    font-weight: 500;
                 }
 
                 :global(.divider) {
@@ -454,6 +517,10 @@ const Dashboard = ({ uid }) => {
                     }
                     .portfolio-header {
                         align-items: center;
+                    }
+
+                    .view-container {
+                        height: unset;
                     }
 
                     .buttons-container,
