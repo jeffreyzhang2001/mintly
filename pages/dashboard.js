@@ -18,7 +18,7 @@ import {
     StarFilled,
 } from '@ant-design/icons'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
-import SearchTicker from '../components/SearchStock'
+import SearchStock from '../components/SearchStock'
 
 const Dashboard = ({ uid }) => {
     const {
@@ -226,15 +226,16 @@ const Dashboard = ({ uid }) => {
                                                 yet.
                                             </h1>
                                             <h2 className="">
-                                                Buy some in the Trade tab!
+                                                Visit the Trade tab!
                                             </h2>
                                         </div>
                                     </div>
                                 </div>
                             ) : activeView === 'trade' ? (
                                 <div className="view-container">
-                                    <SearchTicker
+                                    <SearchStock
                                         autoCompleteClassName="ticker-autocomplete"
+                                        inputClassName="searchstock-input"
                                         onSelect={setSelectedStock}
                                     />
                                     <SkeletonTheme
@@ -250,7 +251,7 @@ const Dashboard = ({ uid }) => {
                                                     'stock-card-container',
                                                 )}
                                             >
-                                                <div style={{ width: '50%' }}>
+                                                <div>
                                                     <h1 className="stock-ticker">
                                                         {selectedStock?.ticker ||
                                                             'Select a stock'}
@@ -273,6 +274,7 @@ const Dashboard = ({ uid }) => {
                                                             <span className="stock-price">
                                                                 <Skeleton
                                                                     width={75}
+                                                                    length={50}
                                                                 />
                                                             </span>
                                                         ) : null}
@@ -280,7 +282,7 @@ const Dashboard = ({ uid }) => {
                                                     <h2>
                                                         {selectedStock?.name || (
                                                             <Skeleton
-                                                                count={3}
+                                                                height={8}
                                                             />
                                                         )}
                                                     </h2>
@@ -297,7 +299,7 @@ const Dashboard = ({ uid }) => {
                                                         <Button
                                                             className={cn(
                                                                 'primary-button',
-                                                                'inject-money-button',
+                                                                'buy-button',
                                                             )}
                                                             type="primary"
                                                             onClick={() => {}}
@@ -432,9 +434,10 @@ const Dashboard = ({ uid }) => {
                     margin-left: auto;
                     display: flex;
                     align-items: center;
+                    justify-content: center;
                 }
                 .stock-ticker {
-                    font-size: 30px;
+                    font-size: 2.1em;
                     font-weight: 700;
                 }
                 .stock-price,
@@ -446,7 +449,7 @@ const Dashboard = ({ uid }) => {
                     color: #E5E1E6;
                 }
                 .percent-change {
-                    font-size: 25px;
+                    font-size: 0.8em;
                     color: ${
                         priceData?.current > priceData?.prevClose
                             ? 'palegreen'
@@ -525,6 +528,12 @@ const Dashboard = ({ uid }) => {
 
                     .view-container {
                         height: unset;
+                    }
+                    .card-right-container {
+                        flex-direction: column;
+                    }
+                    :global(.buy-button) {
+                        margin-left: 0;
                     }
 
                     .buttons-container,
