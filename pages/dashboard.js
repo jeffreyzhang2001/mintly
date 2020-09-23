@@ -412,7 +412,10 @@ const Dashboard = ({ uid }) => {
                     color: white;
                 }
                 .activeTab {
-                    text-decoration: underline;
+                    border-style: solid;
+                    border-width: 0 0 4px 0;
+                    width:fit-content;
+                    border-image: linear-gradient(0.25turn, #70e1f5, #ffd194) 1;
                 }
 
                 .view-container {
