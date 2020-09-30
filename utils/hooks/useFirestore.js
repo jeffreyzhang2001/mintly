@@ -124,8 +124,9 @@ const useFirestore = (uid) => {
                     createdAt: firebaseClient.firestore.Timestamp.fromDate(
                         new Date(),
                     ), // Required
-                    action: 'deposit', // 'deposit' | 'buy' | 'sell' | 'other'
-                    asset: 'cash', // 'cash' | 'stock' | 'option' | 'other'
+                    action: 'deposit', // Required: 'deposit' | 'buy' | 'sell' | 'other'
+                    assetType: 'cash', // Required: 'cash' | 'stock' | 'option' | 'other'
+                    assetName: 'USD', // Required
                     amount, // Optional
                 },
             ],
@@ -143,7 +144,79 @@ const useFirestore = (uid) => {
                 },
                 { merge: true },
             )
-            .then((res) => {})
+    }
+
+    const purchaseAsset = (
+        index,
+        assetType,
+        assetName,
+        assetPrice,
+        quantity,
+    ) => {
+        let currentPortfolios = [...portfolioData.portfolios]
+        currentPortfolios[index] = {
+            ...currentPortfolios[index],
+            history: [
+                ...currentPortfolios[index].history,
+                {
+                    createdAt: firebaseClient.firestore.Timestamp.fromDate(
+                        new Date(),
+                    ), // Required
+                    action: 'buy', // Required
+                    assetType, // Required
+                    assetName, // Required
+                    assetPrice, // Required
+                    quantity, // Required
+                },
+            ],
+        }
+
+        const res = firebaseClient
+            .firestore()
+            .collection('users')
+            .doc(uid)
+            .set(
+                {
+                    portfolioData: {
+                        portfolios: currentPortfolios,
+                    },
+                },
+                { merge: true },
+            )
+    }
+
+    const sellAsset = (index, assetType, assetName, assetPrice, quantity) => {
+        let currentPortfolios = [...portfolioData.portfolios]
+        currentPortfolios[index] = {
+            ...currentPortfolios[index],
+            balance: currentPortfolios[index].balance + amount,
+            history: [
+                ...currentPortfolios[index].history,
+                {
+                    createdAt: firebaseClient.firestore.Timestamp.fromDate(
+                        new Date(),
+                    ), // Required
+                    action: 'sell', // Required
+                    assetType, // Required
+                    assetName, // Required
+                    assetPrice, // Required
+                    quantity, // Required
+                },
+            ],
+        }
+
+        const res = firebaseClient
+            .firestore()
+            .collection('users')
+            .doc(uid)
+            .set(
+                {
+                    portfolioData: {
+                        portfolios: currentPortfolios,
+                    },
+                },
+                { merge: true },
+            )
     }
 
     return {
