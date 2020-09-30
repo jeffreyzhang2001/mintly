@@ -65,6 +65,7 @@ const useFirestore = (uid) => {
                                 }`,
                                 balance: 10000,
                                 equity: 0,
+                                history: [],
                             },
                         ),
                     },
@@ -117,6 +118,17 @@ const useFirestore = (uid) => {
         currentPortfolios[index] = {
             ...currentPortfolios[index],
             balance: currentPortfolios[index].balance + amount,
+            history: [
+                ...currentPortfolios[index].history,
+                {
+                    createdAt: firebaseClient.firestore.Timestamp.fromDate(
+                        new Date(),
+                    ), // Required
+                    action: 'deposit', // 'deposit' | 'buy' | 'sell' | 'other'
+                    asset: 'cash', // 'cash' | 'stock' | 'option' | 'other'
+                    amount, // Optional
+                },
+            ],
         }
 
         const res = firebaseClient

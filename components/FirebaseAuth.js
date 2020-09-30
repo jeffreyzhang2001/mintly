@@ -59,6 +59,7 @@ const FirebaseAuth = ({ isRegistering }) => {
                                         name: 'Portfolio 1',
                                         balance: initialBalance,
                                         equity: 0,
+                                        history: [],
                                     },
                                 ],
                             },
