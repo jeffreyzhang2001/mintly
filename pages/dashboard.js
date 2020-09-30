@@ -429,9 +429,13 @@ const Dashboard = ({ uid }) => {
                     height: 25%;
                     border-radius: 15px;
                     color: black;
-                    background: #f3904f;
-                    background: linear-gradient(to left, #f3904f, #3b4371);
-                    background: -webkit-linear-gradient(to left, #f3904f, #3b4371);
+                    background: #11998e;  /* fallback for old browsers */
+                    background: -webkit-linear-gradient(to left, #38ef7d, #11998e);  /* Chrome 10-25, Safari 5.1-6 */
+                    background: linear-gradient(to left, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+                    // background: #f3904f;
+                    // background: linear-gradient(to left, #f3904f, #3b4371);
+                    // background: -webkit-linear-gradient(to left, #f3904f, #3b4371);
+                    
                 }
                 .inner-card-container {
                     padding: 10px 20px;
