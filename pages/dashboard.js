@@ -282,7 +282,7 @@ const Dashboard = ({ uid }) => {
                                                     <h2>
                                                         {selectedStock?.name || (
                                                             <Skeleton
-                                                                height={8}
+                                                                height={5}
                                                             />
                                                         )}
                                                     </h2>
