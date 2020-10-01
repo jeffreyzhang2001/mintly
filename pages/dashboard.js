@@ -65,7 +65,14 @@ const Dashboard = ({ uid }) => {
     // For buy/sell field in trade tab
     const [selectedStockQuantity, setSelectedStockQuantity] = useState(0)
     const handleBuy = () => {
-        if (
+        if (selectedStockQuantity === 0) {
+            notification.info({
+                message: `Error`,
+                description: 'You must enter a number of shares to buy!',
+                icon: <ExclamationCircleOutlined style={{ color: 'red' }} />,
+                placement: 'bottomRight',
+            })
+        } else if (
             priceData.current * selectedStockQuantity >
             portfolios[activePortfolioIndex].balance
         ) {
@@ -73,13 +80,6 @@ const Dashboard = ({ uid }) => {
                 message: `Error`,
                 description:
                     "You don't have enough money to complete the order!",
-                icon: <ExclamationCircleOutlined style={{ color: 'red' }} />,
-                placement: 'bottomRight',
-            })
-        } else if (selectedStockQuantity === 0) {
-            notification.info({
-                message: `Error`,
-                description: 'You must enter a number of shares to buy!',
                 icon: <ExclamationCircleOutlined style={{ color: 'red' }} />,
                 placement: 'bottomRight',
             })
@@ -118,21 +118,24 @@ const Dashboard = ({ uid }) => {
         }
     }
     const handleSell = () => {
-        if (
+        if (selectedStockQuantity === 0) {
+            notification.info({
+                message: `Error`,
+                description: 'You must enter a number of shares to sell!',
+                icon: <ExclamationCircleOutlined style={{ color: 'red' }} />,
+                placement: 'bottomRight',
+            })
+        } else if (
+            !portfolios[activePortfolioIndex]?.equities?.[
+                selectedStock.ticker
+            ] ||
             portfolios[activePortfolioIndex]?.equities?.[selectedStock.ticker]
-                ?.quantityShares < selectedStockQuantity
+                .quantityShares < selectedStockQuantity
         ) {
             notification.info({
                 message: `Error`,
                 description:
                     "You don't have enough shares to complete the order!",
-                icon: <ExclamationCircleOutlined style={{ color: 'red' }} />,
-                placement: 'bottomRight',
-            })
-        } else if (selectedStockQuantity === 0) {
-            notification.info({
-                message: `Error`,
-                description: 'You must enter a number of shares to sell!',
                 icon: <ExclamationCircleOutlined style={{ color: 'red' }} />,
                 placement: 'bottomRight',
             })
@@ -368,7 +371,8 @@ const Dashboard = ({ uid }) => {
                                                     priceData?.prevClose
                                                     ? 'green-card-background'
                                                     : 'red-card-background',
-                                                !isStockSelected &&
+                                                (!isStockSelected ||
+                                                    !priceData) &&
                                                     'neutral-card-background',
                                             )}
                                         >

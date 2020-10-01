@@ -157,9 +157,10 @@ const useFirestore = (uid) => {
         currentPortfolios[index] = {
             ...currentPortfolios[index],
             balance: currentPortfolios[index].balance - assetPrice * quantity,
+            equity: currentPortfolios[index].equity + assetPrice * quantity,
             equities: {
                 ...currentPortfolios[index].equities,
-                assetName: {
+                [assetName]: {
                     quantityShares:
                         (currentPortfolios[index].equities?.[assetName]
                             ?.shares || 0) + quantity,
@@ -199,9 +200,10 @@ const useFirestore = (uid) => {
         currentPortfolios[index] = {
             ...currentPortfolios[index],
             balance: currentPortfolios[index].balance + assetPrice * quantity,
+            equity: currentPortfolios[index].equity - assetPrice * quantity,
             equities: {
                 ...currentPortfolios[index].equities,
-                assetName: {
+                [assetName]: {
                     quantityShares:
                         (currentPortfolios[index].equities?.[assetName]
                             ?.shares || 0) - quantity,
