@@ -119,8 +119,8 @@ const Dashboard = ({ uid }) => {
     }
     const handleSell = () => {
         if (
-            portfolios[activePortfolioIndex]?.equities?.[selectedStock.ticker] <
-            selectedStockQuantity
+            portfolios[activePortfolioIndex]?.equities?.[selectedStock.ticker]
+                ?.quantityShares < selectedStockQuantity
         ) {
             notification.info({
                 message: `Error`,
