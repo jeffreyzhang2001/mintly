@@ -522,8 +522,9 @@ const Dashboard = ({ uid }) => {
                                     </SkeletonTheme>
                                 </div>
                             ) : (
-                                portfolios[activePortfolioIndex]?.history.reverse().map(
-                                    (event, index) => {
+                                portfolios[activePortfolioIndex]?.history
+                                    .reverse()
+                                    .map((event, index) => {
                                         if (event.action === 'deposit') {
                                             return (
                                                 <div
@@ -589,8 +590,7 @@ const Dashboard = ({ uid }) => {
                                         } else {
                                             return <p>{event.action}</p>
                                         }
-                                    },
-                                )
+                                    })
                             )}
                         </div>
                     </div>
