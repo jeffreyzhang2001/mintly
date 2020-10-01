@@ -221,7 +221,12 @@ const Dashboard = ({ uid }) => {
                         <div className="views-container">
                             {activeView === 'portfolio' ? (
                                 <div>
-                                    <div className="stock-info-background">
+                                    <div
+                                        className={cn(
+                                            'outer-card-container',
+                                            'portfolio-card-background',
+                                        )}
+                                    >
                                         <div className="inner-card-container">
                                             <h1 className="stock-ticker">
                                                 You don&apos;t have any stocks
@@ -246,7 +251,12 @@ const Dashboard = ({ uid }) => {
                                             stockData ? '#8e9eab' : '#e2e2e2'
                                         }
                                     >
-                                        <div className="stock-info-background">
+                                        <div
+                                            className={cn(
+                                                'outer-card-container',
+                                                'neutral-card-background',
+                                            )}
+                                        >
                                             <div
                                                 className={cn(
                                                     'inner-card-container',
@@ -313,7 +323,12 @@ const Dashboard = ({ uid }) => {
                                             </div>
                                         </div>
                                         {isStockSelected && companyNews && (
-                                            <div className="stock-info-background">
+                                            <div
+                                                className={cn(
+                                                    'outer-card-container',
+                                                    'neutral-card-background',
+                                                )}
+                                            >
                                                 <div className="inner-card-container">
                                                     <h1 className="stock-ticker">
                                                         News
@@ -346,26 +361,64 @@ const Dashboard = ({ uid }) => {
                                 </div>
                             ) : (
                                 portfolios[activePortfolioIndex]?.history.map(
-                                    (event) => {
+                                    (event, index) => {
                                         if (event.action === 'deposit') {
                                             return (
-                                                <p>Deposited ${event.amount}</p>
+                                                <div
+                                                    className={cn(
+                                                        'outer-card-container',
+                                                        'neutral-card-background',
+                                                    )}
+                                                >
+                                                    <div className="inner-card-container">
+                                                        <h1 className="stock-ticker">
+                                                            Deposited $
+                                                            {event.amount}
+                                                        </h1>
+                                                    </div>
+                                                </div>
                                             )
                                         } else if (event.action === 'buy') {
                                             return (
-                                                <p>
-                                                    Bought {event.quantity}
-                                                    shares of {event.assetName}
-                                                    at {event.assetPrice}/share
-                                                </p>
+                                                <div
+                                                    className={cn(
+                                                        'outer-card-container',
+                                                        'green-card-background',
+                                                    )}
+                                                >
+                                                    <div className="inner-card-container">
+                                                        <h1 className="stock-ticker">
+                                                            Bought{' '}
+                                                            {event.quantity}
+                                                            shares of
+                                                            {event.assetName}
+                                                            at{' '}
+                                                            {event.assetPrice}
+                                                            /share
+                                                        </h1>
+                                                    </div>
+                                                </div>
                                             )
                                         } else if (event.action === 'sold') {
                                             return (
-                                                <p>
-                                                    Sold {event.quantity} shares
-                                                    of {event.assetName}
-                                                    at {event.assetPrice}/share
-                                                </p>
+                                                <div
+                                                    className={cn(
+                                                        'outer-card-container',
+                                                        'red-card-background',
+                                                    )}
+                                                >
+                                                    <div className="inner-card-container">
+                                                        <h1 className="stock-ticker">
+                                                            Sold{' '}
+                                                            {event.quantity}
+                                                            shares of
+                                                            {event.assetName}
+                                                            at{' '}
+                                                            {event.assetPrice}
+                                                            /share
+                                                        </h1>
+                                                    </div>
+                                                </div>
                                             )
                                         } else {
                                             return <p>{event.action}</p>
@@ -452,18 +505,26 @@ const Dashboard = ({ uid }) => {
                 :global(.ticker-autocomplete) {
                     margin-top: 10px;
                 }
-                .stock-info-background {
+                .portfolio-card-background {
+                    background-image: linear-gradient(260deg, #30cfd0 0%, #330867 100%);
+                }
+                .green-card-background {
+                    background: #11998e;
+                    background: -webkit-linear-gradient(to left, #38ef7d, #11998e);
+                    background: linear-gradient(to left, #38ef7d, #11998e);
+                }
+                .red-card-background {
+                    background-image: linear-gradient( 135deg, #F05F57 10%, #360940 100%);
+                }
+                .neutral-card-background {
+                    background: #536976;
+                    background: -webkit-linear-gradient(to right, #292E49, #536976);
+                    background: linear-gradient(to right, #292E49, #536976);
+                }
+                .outer-card-container {
                     margin-top: 20px;
                     height: 25%;
                     border-radius: 15px;
-                    color: black;
-                    background: #11998e;  /* fallback for old browsers */
-                    background: -webkit-linear-gradient(to left, #38ef7d, #11998e);  /* Chrome 10-25, Safari 5.1-6 */
-                    background: linear-gradient(to left, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-                    // background: #f3904f;
-                    // background: linear-gradient(to left, #f3904f, #3b4371);
-                    // background: -webkit-linear-gradient(to left, #f3904f, #3b4371);
-                    
                 }
                 .inner-card-container {
                     padding: 10px 20px;
