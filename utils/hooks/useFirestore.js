@@ -156,8 +156,12 @@ const useFirestore = (uid) => {
         let currentPortfolios = [...portfolioData.portfolios]
         currentPortfolios[index] = {
             ...currentPortfolios[index],
-            balance: currentPortfolios[index].balance - assetPrice * quantity,
-            equity: currentPortfolios[index].equity + assetPrice * quantity,
+            balance:
+                currentPortfolios[index].balance -
+                Number.parseFloat((assetPrice * quantity).toFixed(2)),
+            equity:
+                currentPortfolios[index].equity +
+                Number.parseFloat((assetPrice * quantity).toFixed(2)),
             equities: {
                 ...currentPortfolios[index].equities,
                 [assetName]: {
@@ -199,14 +203,18 @@ const useFirestore = (uid) => {
         let currentPortfolios = [...portfolioData.portfolios]
         currentPortfolios[index] = {
             ...currentPortfolios[index],
-            balance: currentPortfolios[index].balance + assetPrice * quantity,
-            equity: currentPortfolios[index].equity - assetPrice * quantity,
+            balance:
+                currentPortfolios[index].balance +
+                Number.parseFloat((assetPrice * quantity).toFixed(2)),
+            equity:
+                currentPortfolios[index].equity -
+                Number.parseFloat((assetPrice * quantity).toFixed(2)),
             equities: {
                 ...currentPortfolios[index].equities,
                 [assetName]: {
                     quantityShares:
-                        (currentPortfolios[index].equities?.[assetName]
-                            ?.shares || 0) - quantity,
+                        currentPortfolios[index].equities?.[assetName]
+                            ?.quantityShares - quantity,
                 },
             },
             history: [
@@ -222,6 +230,11 @@ const useFirestore = (uid) => {
                     quantity, // Required
                 },
             ],
+        }
+        if (
+            currentPortfolios[index].equities?.[assetName]?.quantityShares === 0
+        ) {
+            delete currentPortfolios[index].equities?.[assetName]
         }
 
         const res = firebaseClient

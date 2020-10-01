@@ -36,10 +36,12 @@ export default async (req, res) => {
                     open: o,
                     high: h,
                     low: l,
-                    current: c,
+                    current: Number.parseFloat(c.toFixed(2)),
                     prevClose: pc,
                     dollarChange: c - pc,
-                    percentChange: (((c - pc) / pc) * 100).toFixed(2),
+                    percentChange: Number.parseFloat(
+                        (((c - pc) / pc) * 100).toFixed(2),
+                    ),
                 }
                 resolve()
             }

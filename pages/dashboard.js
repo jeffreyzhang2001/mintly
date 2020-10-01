@@ -7,6 +7,7 @@ import { firebaseAdmin } from '../utils/firebase/firebaseAdmin'
 import useFirestore from '../utils/hooks/useFirestore'
 import useSWR from 'swr'
 import axios from 'axios'
+import { secondsToDate } from '../utils/utils'
 
 import cn from 'classnames'
 import { Button, Select, Modal, Form, Input, notification, Divider } from 'antd'
@@ -174,6 +175,35 @@ const Dashboard = ({ uid }) => {
         }
     }
 
+    // Owned equities map
+    const activePortfolioEquitiesString =
+        portfolios?.[activePortfolioIndex]?.equities &&
+        Object.keys(portfolios?.[activePortfolioIndex]?.equities)
+            .map((item) => item)
+            .join()
+    const { data } = useSWR(
+        activePortfolioEquitiesString
+            ? `/api/quote/${activePortfolioEquitiesString}`
+            : null,
+        (url) => axios(url).then((response) => response.data),
+    )
+    const { portfolioEquitiesPriceData } = data || {}
+    const activePortfolioEquities =
+        portfolios?.[activePortfolioIndex]?.equities &&
+        Object.keys(portfolios?.[activePortfolioIndex]?.equities).map(
+            (item, index) => {
+                const { quantityShares } = portfolios?.[
+                    activePortfolioIndex
+                ]?.equities?.[item]
+
+                return {
+                    assetName: item,
+                    quantityShares,
+                    ...portfolioEquitiesPriceData?.[item],
+                }
+            },
+        )
+
     // portfolio, trade, history
     const [activeView, setActiveView] = useState('portfolio')
 
@@ -222,20 +252,21 @@ const Dashboard = ({ uid }) => {
                                 )}
                                 <h1 className="account-balance">
                                     $
-                                    {portfolios[activePortfolioIndex]?.equity +
+                                    {(
                                         portfolios[activePortfolioIndex]
-                                            ?.balance}
+                                            ?.equity +
+                                        portfolios[activePortfolioIndex]
+                                            ?.balance
+                                    ).toFixed(2)}
                                     <span className="subtitle-balance">
                                         Equity: $
-                                        {
-                                            portfolios[activePortfolioIndex]
-                                                ?.equity
-                                        }{' '}
+                                        {portfolios[
+                                            activePortfolioIndex
+                                        ]?.equity.toFixed(2)}{' '}
                                         | Cash: $
-                                        {
-                                            portfolios[activePortfolioIndex]
-                                                ?.balance
-                                        }
+                                        {portfolios[
+                                            activePortfolioIndex
+                                        ]?.balance.toFixed(2)}
                                     </span>
                                 </h1>
                             </div>
@@ -333,7 +364,7 @@ const Dashboard = ({ uid }) => {
                         {/* <Divider className="divider" /> */}
                         <div className="views-container">
                             {activeView === 'portfolio' ? (
-                                !portfolios[activePortfolioIndex]?.balance ? (
+                                isEmpty(activePortfolioEquities) ? (
                                     <div>
                                         <div
                                             className={cn(
@@ -353,7 +384,63 @@ const Dashboard = ({ uid }) => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div>Equities</div>
+                                    <div className="view-container">
+                                        {activePortfolioEquities.map(
+                                            (equity, index) => (
+                                                <div
+                                                    className={cn(
+                                                        'outer-card-container',
+                                                        'portfolio-card-background',
+                                                    )}
+                                                    key={index}
+                                                >
+                                                    <div
+                                                        className={cn(
+                                                            'inner-card-container',
+                                                            'stock-card-container',
+                                                        )}
+                                                    >
+                                                        <div>
+                                                            <h1 className="stock-ticker">
+                                                                {
+                                                                    equity.assetName
+                                                                }
+                                                                <span className="stock-price">
+                                                                    {
+                                                                        equity.current
+                                                                    }{' '}
+                                                                </span>
+                                                                <span
+                                                                    className={cn(
+                                                                        'percent-change',
+                                                                        equity.current >
+                                                                            equity.prevClose
+                                                                            ? 'positive-change'
+                                                                            : 'negative-change',
+                                                                    )}
+                                                                >
+                                                                    (
+                                                                    {
+                                                                        equity.percentChange
+                                                                    }
+                                                                    %)
+                                                                </span>
+                                                            </h1>
+                                                            <h2>
+                                                                {
+                                                                    equity.quantityShares
+                                                                }{' '}
+                                                                {equity.quantityShares >
+                                                                1
+                                                                    ? 'shares'
+                                                                    : 'share'}
+                                                            </h2>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ),
+                                        )}
+                                    </div>
                                 )
                             ) : activeView === 'trade' ? (
                                 <div className="view-container">
@@ -397,7 +484,15 @@ const Dashboard = ({ uid }) => {
                                                                         priceData.current
                                                                     }{' '}
                                                                 </span>
-                                                                <span className="percent-change">
+                                                                <span
+                                                                    className={cn(
+                                                                        'percent-change',
+                                                                        priceData.current >
+                                                                            priceData.prevClose
+                                                                            ? 'positive-change'
+                                                                            : 'negative-change',
+                                                                    )}
+                                                                >
                                                                     (
                                                                     {
                                                                         priceData.percentChange
@@ -522,75 +617,114 @@ const Dashboard = ({ uid }) => {
                                     </SkeletonTheme>
                                 </div>
                             ) : (
-                                portfolios[activePortfolioIndex]?.history
-                                    .reverse()
-                                    .map((event, index) => {
-                                        if (event.action === 'deposit') {
-                                            return (
-                                                <div
-                                                    className={cn(
-                                                        'outer-card-container',
-                                                        'neutral-card-background',
-                                                    )}
-                                                >
-                                                    <div className="inner-card-container">
-                                                        <h1 className="stock-ticker">
-                                                            Deposited $
-                                                            {event.amount}
-                                                        </h1>
+                                <div className="view-container">
+                                    {portfolios[activePortfolioIndex]?.history
+                                        .reverse()
+                                        .map((event, index) => {
+                                            if (event.action === 'deposit') {
+                                                return (
+                                                    <div
+                                                        className={cn(
+                                                            'outer-card-container',
+                                                            'neutral-card-background',
+                                                        )}
+                                                    >
+                                                        <div className="inner-card-container">
+                                                            <h1 className="stock-ticker">
+                                                                Deposited $
+                                                                {event.amount}
+                                                            </h1>
+                                                            <h2>
+                                                                {secondsToDate(
+                                                                    event
+                                                                        .createdAt
+                                                                        .seconds,
+                                                                )}
+                                                            </h2>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )
-                                        } else if (event.action === 'buy') {
-                                            return (
-                                                <div
-                                                    className={cn(
-                                                        'outer-card-container',
-                                                        'green-card-background',
-                                                    )}
-                                                >
-                                                    <div className="inner-card-container">
-                                                        <h1 className="stock-ticker">
-                                                            Bought{' '}
-                                                            {event.quantity}{' '}
-                                                            shares of{' '}
-                                                            <b>
+                                                )
+                                            } else if (event.action === 'buy') {
+                                                return (
+                                                    <div
+                                                        className={cn(
+                                                            'outer-card-container',
+                                                            'green-card-background',
+                                                        )}
+                                                    >
+                                                        <div className="inner-card-container">
+                                                            <h1 className="stock-ticker">
+                                                                Bought{' '}
+                                                                {event.quantity}{' '}
+                                                                {event.quantity >
+                                                                1
+                                                                    ? 'shares'
+                                                                    : 'share'}{' '}
+                                                                of{' '}
+                                                                <b>
+                                                                    {
+                                                                        event.assetName
+                                                                    }
+                                                                </b>{' '}
+                                                                at{' '}
+                                                                {
+                                                                    event.assetPrice
+                                                                }
+                                                                /share
+                                                            </h1>
+                                                            <h2>
+                                                                {secondsToDate(
+                                                                    event
+                                                                        .createdAt
+                                                                        .seconds,
+                                                                )}
+                                                            </h2>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            } else if (
+                                                event.action === 'sell'
+                                            ) {
+                                                return (
+                                                    <div
+                                                        className={cn(
+                                                            'outer-card-container',
+                                                            'red-card-background',
+                                                        )}
+                                                    >
+                                                        <div className="inner-card-container">
+                                                            <h1 className="stock-ticker">
+                                                                Sold{' '}
+                                                                {event.quantity}{' '}
+                                                                {event.quantity >
+                                                                1
+                                                                    ? 'shares'
+                                                                    : 'share'}{' '}
+                                                                of{' '}
                                                                 {
                                                                     event.assetName
+                                                                }{' '}
+                                                                at{' '}
+                                                                {
+                                                                    event.assetPrice
                                                                 }
-                                                            </b>{' '}
-                                                            at{' '}
-                                                            {event.assetPrice}
-                                                            /share
-                                                        </h1>
+                                                                /share
+                                                            </h1>
+                                                            <h2>
+                                                                {secondsToDate(
+                                                                    event
+                                                                        .createdAt
+                                                                        .seconds,
+                                                                )}
+                                                            </h2>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )
-                                        } else if (event.action === 'sold') {
-                                            return (
-                                                <div
-                                                    className={cn(
-                                                        'outer-card-container',
-                                                        'red-card-background',
-                                                    )}
-                                                >
-                                                    <div className="inner-card-container">
-                                                        <h1 className="stock-ticker">
-                                                            Sold{' '}
-                                                            {event.quantity}
-                                                            shares of
-                                                            {event.assetName}
-                                                            at{' '}
-                                                            {event.assetPrice}
-                                                            /share
-                                                        </h1>
-                                                    </div>
-                                                </div>
-                                            )
-                                        } else {
-                                            return <p>{event.action}</p>
-                                        }
-                                    })
+                                                )
+                                            } else {
+                                                return <p>{event.action}</p>
+                                            }
+                                        })}
+                                </div>
                             )}
                         </div>
                     </div>
@@ -666,7 +800,9 @@ const Dashboard = ({ uid }) => {
                 }
 
                 .view-container {
-                    height: 60vh;
+                    margin-top: 5px;
+                    height: 55vh;
+                    overflow: auto;
                 }
                 :global(.ticker-autocomplete) {
                     margin-top: 10px;
@@ -680,7 +816,7 @@ const Dashboard = ({ uid }) => {
                     background: linear-gradient(to left, #38ef7d, #11998e);
                 }
                 .red-card-background {
-                    background-image: linear-gradient( 135deg, #F05F57 10%, #360940 100%);
+                    background-image: linear-gradient(290deg, #F05F57 10%, #360940 100%);
                 }
                 .neutral-card-background {
                     background: #536976;
@@ -689,11 +825,11 @@ const Dashboard = ({ uid }) => {
                 }
                 .outer-card-container {
                     margin-top: 20px;
-                    height: 25%;
+                    height: 18%;
                     border-radius: 15px;
                 }
                 .inner-card-container {
-                    padding: 10px 20px;
+                    padding: 8px 20px;
                 }
                 .stock-card-container {
                     display: flex;
@@ -718,11 +854,12 @@ const Dashboard = ({ uid }) => {
                 }
                 .percent-change {
                     font-size: 0.8em;
-                    color: ${
-                        priceData?.current > priceData?.prevClose
-                            ? 'palegreen'
-                            : 'indianred'
-                    };
+                }
+                .positive-change {
+                    color: palegreen;
+                }
+                .negative-change {
+                    color: pink;
                 }
                 .headline {
                     font-weight: 500;
@@ -803,6 +940,7 @@ const Dashboard = ({ uid }) => {
 
                     .view-container {
                         height: unset;
+                        overflow: unset;
                     }
                     .card-right-container {
                         flex-direction: column;

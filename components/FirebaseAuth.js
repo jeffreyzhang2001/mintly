@@ -21,7 +21,7 @@ const FirebaseAuth = ({ isRegistering }) => {
 
     const router = useRouter()
 
-    const [bankrollSize, setBankrollSize] = useState(50000)
+    const [bankrollSize, setBankrollSize] = useState(10000)
 
     const firebaseAuthConfig = {
         signInFlow: 'popup',
