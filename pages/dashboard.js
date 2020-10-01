@@ -384,63 +384,75 @@ const Dashboard = ({ uid }) => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="view-container">
-                                        {activePortfolioEquities.map(
-                                            (equity, index) => (
-                                                <div
-                                                    className={cn(
-                                                        'outer-card-container',
-                                                        'portfolio-card-background',
-                                                    )}
-                                                    key={index}
-                                                >
+                                    <SkeletonTheme
+                                        color="#e2e2e2"
+                                        highlightColor="#8e9eab"
+                                    >
+                                        <div className="view-container">
+                                            {activePortfolioEquities.map(
+                                                (equity, index) => (
                                                     <div
                                                         className={cn(
-                                                            'inner-card-container',
-                                                            'stock-card-container',
+                                                            'outer-card-container',
+                                                            'portfolio-card-background',
                                                         )}
+                                                        key={index}
                                                     >
-                                                        <div>
-                                                            <h1 className="stock-ticker">
-                                                                {
-                                                                    equity.assetName
-                                                                }
-                                                                <span className="stock-price">
+                                                        <div
+                                                            className={cn(
+                                                                'inner-card-container',
+                                                                'stock-card-container',
+                                                            )}
+                                                        >
+                                                            <div>
+                                                                <h1 className="stock-ticker">
                                                                     {
-                                                                        equity.current
-                                                                    }{' '}
-                                                                </span>
-                                                                <span
-                                                                    className={cn(
-                                                                        'percent-change',
-                                                                        equity.current >
-                                                                            equity.prevClose
-                                                                            ? 'positive-change'
-                                                                            : 'negative-change',
-                                                                    )}
-                                                                >
-                                                                    (
-                                                                    {
-                                                                        equity.percentChange
+                                                                        equity.assetName
                                                                     }
-                                                                    %)
-                                                                </span>
-                                                            </h1>
-                                                            <h2>
-                                                                {
-                                                                    equity.quantityShares
-                                                                }{' '}
-                                                                {equity.quantityShares >
-                                                                1
-                                                                    ? 'shares'
-                                                                    : 'share'}
-                                                            </h2>
+                                                                    <span className="stock-price">
+                                                                        {equity.current || (
+                                                                            <Skeleton
+                                                                                width={
+                                                                                    75
+                                                                                }
+                                                                                length={
+                                                                                    50
+                                                                                }
+                                                                            />
+                                                                        )}{' '}
+                                                                    </span>
+                                                                    <span
+                                                                        className={cn(
+                                                                            'percent-change',
+                                                                            equity.current >
+                                                                                equity.prevClose
+                                                                                ? 'positive-change'
+                                                                                : 'negative-change',
+                                                                        )}
+                                                                    >
+                                                                        (
+                                                                        {
+                                                                            equity.percentChange
+                                                                        }
+                                                                        %)
+                                                                    </span>
+                                                                </h1>
+                                                                <h2>
+                                                                    {
+                                                                        equity.quantityShares
+                                                                    }{' '}
+                                                                    {equity.quantityShares >
+                                                                    1
+                                                                        ? 'shares'
+                                                                        : 'share'}
+                                                                </h2>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ),
-                                        )}
-                                    </div>
+                                                ),
+                                            )}
+                                        </div>
+                                    </SkeletonTheme>
                                 )
                             ) : activeView === 'trade' ? (
                                 <div className="view-container">
