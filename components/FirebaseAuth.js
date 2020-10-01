@@ -59,7 +59,17 @@ const FirebaseAuth = ({ isRegistering }) => {
                                         name: 'Portfolio 1',
                                         balance: initialBalance,
                                         equity: 0,
-                                        history: [],
+                                        history: [
+                                            {
+                                                createdAt: firebaseClient.firestore.Timestamp.fromDate(
+                                                    new Date(),
+                                                ),
+                                                action: 'deposit',
+                                                assetType: 'cash',
+                                                assetName: 'USD',
+                                                amount: initialBalance,
+                                            },
+                                        ],
                                     },
                                 ],
                             },
