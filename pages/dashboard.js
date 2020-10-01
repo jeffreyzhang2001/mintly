@@ -9,11 +9,10 @@ import useSWR from 'swr'
 import axios from 'axios'
 
 import cn from 'classnames'
-import { Button, Select, Modal, Divider } from 'antd'
+import { Button, Select, Modal, Form, Input, notification, Divider } from 'antd'
 const { Option } = Select
 import {
     ExclamationCircleOutlined,
-    PlusOutlined,
     StarOutlined,
     StarFilled,
 } from '@ant-design/icons'
@@ -55,11 +54,122 @@ const Dashboard = ({ uid }) => {
     // setSelectedStock is handled by <SearchStock /> component
     const [selectedStock, setSelectedStock] = useState({})
     const isStockSelected = !isEmpty(selectedStock)
+
+    // Fetch selectedStock data from /api/ticker
     const { data: stockData, error } = useSWR(
         selectedStock?.ticker ? `/api/ticker/${selectedStock?.ticker}` : null,
         (url) => axios(url).then((response) => response.data),
     )
     const { priceData, recommendationTrends, companyNews } = stockData || {}
+
+    // For buy/sell field in trade tab
+    const [selectedStockQuantity, setSelectedStockQuantity] = useState(0)
+    const handleBuy = () => {
+        if (
+            priceData.current * selectedStockQuantity >
+            portfolios[activePortfolioIndex].balance
+        ) {
+            notification.info({
+                message: `Error`,
+                description:
+                    "You don't have enough money to complete the order!",
+                icon: <ExclamationCircleOutlined style={{ color: 'red' }} />,
+                placement: 'bottomRight',
+            })
+        } else if (selectedStockQuantity === 0) {
+            notification.info({
+                message: `Error`,
+                description: 'You must enter a number of shares to buy!',
+                icon: <ExclamationCircleOutlined style={{ color: 'red' }} />,
+                placement: 'bottomRight',
+            })
+        } else {
+            Modal.confirm({
+                title: 'Buy Stock',
+                icon: (
+                    <ExclamationCircleOutlined
+                        style={{
+                            color: 'green',
+                        }}
+                    />
+                ),
+                content: `Are you sure you want to buy ${selectedStockQuantity} shares of ${selectedStock.ticker}?`,
+                centered: true,
+                maskClosable: true,
+                okText: 'Confirm',
+                okButtonProps: {
+                    className: 'primary-button',
+                },
+                onOk: () => {
+                    purchaseAsset(
+                        activePortfolioIndex,
+                        'stock',
+                        selectedStock.ticker,
+                        priceData.current,
+                        selectedStockQuantity,
+                    )
+                },
+                cancelText: 'Cancel',
+                cancelButtonProps: {
+                    className: 'modal-cancel-button',
+                    type: 'primary',
+                },
+            })
+        }
+    }
+    const handleSell = () => {
+        if (
+            portfolios[activePortfolioIndex]?.equities?.[selectedStock.ticker] <
+            selectedStockQuantity
+        ) {
+            notification.info({
+                message: `Error`,
+                description:
+                    "You don't have enough shares to complete the order!",
+                icon: <ExclamationCircleOutlined style={{ color: 'red' }} />,
+                placement: 'bottomRight',
+            })
+        } else if (selectedStockQuantity === 0) {
+            notification.info({
+                message: `Error`,
+                description: 'You must enter a number of shares to sell!',
+                icon: <ExclamationCircleOutlined style={{ color: 'red' }} />,
+                placement: 'bottomRight',
+            })
+        } else {
+            Modal.confirm({
+                title: 'Buy Stock',
+                icon: (
+                    <ExclamationCircleOutlined
+                        style={{
+                            color: 'red',
+                        }}
+                    />
+                ),
+                content: `Are you sure you want to sell ${selectedStockQuantity} shares of ${selectedStock.ticker}?`,
+                centered: true,
+                maskClosable: true,
+                okText: 'Confirm',
+                okButtonProps: {
+                    className: 'destructive-button',
+                },
+                onOk: () => {
+                    sellAsset(
+                        activePortfolioIndex,
+                        'stock',
+                        selectedStock.ticker,
+                        priceData.current,
+                        selectedStockQuantity,
+                    )
+                },
+                cancelText: 'Cancel',
+                cancelButtonProps: {
+                    className: 'modal-cancel-button',
+                    type: 'primary',
+                },
+            })
+        }
+    }
 
     // portfolio, trade, history
     const [activeView, setActiveView] = useState('portfolio')
@@ -254,7 +364,12 @@ const Dashboard = ({ uid }) => {
                                         <div
                                             className={cn(
                                                 'outer-card-container',
-                                                'neutral-card-background',
+                                                priceData?.current >
+                                                    priceData?.prevClose
+                                                    ? 'green-card-background'
+                                                    : 'red-card-background',
+                                                !isStockSelected &&
+                                                    'neutral-card-background',
                                             )}
                                         >
                                             <div
@@ -301,9 +416,46 @@ const Dashboard = ({ uid }) => {
                                                 </div>
                                                 {isStockSelected && (
                                                     <div className="card-right-container">
+                                                        <Form.Item>
+                                                            <Input
+                                                                value={
+                                                                    selectedStockQuantity
+                                                                }
+                                                                maxLength="4"
+                                                                bordered="false"
+                                                                onChange={(
+                                                                    e,
+                                                                ) => {
+                                                                    const newValue = parseInt(
+                                                                        e.target
+                                                                            .value,
+                                                                    )
+                                                                    if (
+                                                                        Number.isNaN(
+                                                                            newValue,
+                                                                        )
+                                                                    ) {
+                                                                        setSelectedStockQuantity(
+                                                                            0,
+                                                                        )
+                                                                        return
+                                                                    } else if (
+                                                                        newValue <
+                                                                        0
+                                                                    ) {
+                                                                        return
+                                                                    }
+                                                                    setSelectedStockQuantity(
+                                                                        Number(
+                                                                            newValue,
+                                                                        ),
+                                                                    )
+                                                                }}
+                                                            />
+                                                        </Form.Item>
                                                         <Button
                                                             className="destructive-button"
-                                                            onClick={() => {}}
+                                                            onClick={handleSell}
                                                             type="primary"
                                                         >
                                                             Sell
@@ -314,7 +466,7 @@ const Dashboard = ({ uid }) => {
                                                                 'buy-button',
                                                             )}
                                                             type="primary"
-                                                            onClick={() => {}}
+                                                            onClick={handleBuy}
                                                         >
                                                             Buy
                                                         </Button>
@@ -342,6 +494,8 @@ const Dashboard = ({ uid }) => {
                                                             ) => (
                                                                 <a
                                                                     key={index}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
                                                                     href={
                                                                         article.url
                                                                     }
@@ -506,7 +660,7 @@ const Dashboard = ({ uid }) => {
                     margin-top: 10px;
                 }
                 .portfolio-card-background {
-                    background-image: linear-gradient(260deg, #30cfd0 0%, #330867 100%);
+                    background-image: linear-gradient(-225deg, #473B7B 0%, #3584A7 51%, #30D2BE 100%);
                 }
                 .green-card-background {
                     background: #11998e;
@@ -587,7 +741,6 @@ const Dashboard = ({ uid }) => {
                     border-radius: 8px;
                     border: solid 1px black !important;
                 }
-
                 :global(.modal-cancel-button) {
                     background-color: white !important;
                     border-color: gray !important;
@@ -602,6 +755,14 @@ const Dashboard = ({ uid }) => {
                 }
                 :global(.add-portfolio-button):hover {
                     color: #33ffaa;
+                }
+                :global(.ant-input) {
+                    font-size: 18px;
+                }
+                :global(.ant-row) {
+                    margin-top: 10%;
+                    margin-right: 10px;
+                    width: 70px;
                 }
 
                 h1,
