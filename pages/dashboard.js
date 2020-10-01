@@ -333,24 +333,28 @@ const Dashboard = ({ uid }) => {
                         {/* <Divider className="divider" /> */}
                         <div className="views-container">
                             {activeView === 'portfolio' ? (
-                                <div>
-                                    <div
-                                        className={cn(
-                                            'outer-card-container',
-                                            'portfolio-card-background',
-                                        )}
-                                    >
-                                        <div className="inner-card-container">
-                                            <h1 className="stock-ticker">
-                                                You don&apos;t have any stocks
-                                                yet.
-                                            </h1>
-                                            <h2 className="">
-                                                Visit the Trade tab!
-                                            </h2>
+                                !portfolios[activePortfolioIndex]?.balance ? (
+                                    <div>
+                                        <div
+                                            className={cn(
+                                                'outer-card-container',
+                                                'portfolio-card-background',
+                                            )}
+                                        >
+                                            <div className="inner-card-container">
+                                                <h1 className="stock-ticker">
+                                                    You don&apos;t have any
+                                                    stocks yet.
+                                                </h1>
+                                                <h2 className="">
+                                                    Visit the Trade tab!
+                                                </h2>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                ) : (
+                                    <div>Equities</div>
+                                )
                             ) : activeView === 'trade' ? (
                                 <div className="view-container">
                                     <SearchStock
@@ -518,7 +522,7 @@ const Dashboard = ({ uid }) => {
                                     </SkeletonTheme>
                                 </div>
                             ) : (
-                                portfolios[activePortfolioIndex]?.history.map(
+                                portfolios[activePortfolioIndex]?.history.reverse().map(
                                     (event, index) => {
                                         if (event.action === 'deposit') {
                                             return (
@@ -547,9 +551,13 @@ const Dashboard = ({ uid }) => {
                                                     <div className="inner-card-container">
                                                         <h1 className="stock-ticker">
                                                             Bought{' '}
-                                                            {event.quantity}
-                                                            shares of
-                                                            {event.assetName}
+                                                            {event.quantity}{' '}
+                                                            shares of{' '}
+                                                            <b>
+                                                                {
+                                                                    event.assetName
+                                                                }
+                                                            </b>{' '}
                                                             at{' '}
                                                             {event.assetPrice}
                                                             /share
