@@ -226,6 +226,8 @@ const useFirestore = (uid) => {
         deletePortfolio,
         makeDefault,
         injectMoney,
+        purchaseAsset,
+        sellAsset,
     }
 }
 

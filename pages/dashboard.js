@@ -28,6 +28,8 @@ const Dashboard = ({ uid }) => {
         deletePortfolio,
         makeDefault,
         injectMoney,
+        purchaseAsset,
+        sellAsset,
     } = useFirestore(uid)
     const {
         createdAt,
@@ -343,7 +345,33 @@ const Dashboard = ({ uid }) => {
                                     </SkeletonTheme>
                                 </div>
                             ) : (
-                                <h2>History is coming soon!</h2>
+                                portfolios[activePortfolioIndex]?.history.map(
+                                    (event) => {
+                                        if (event.action === 'deposit') {
+                                            return (
+                                                <p>Deposited ${event.amount}</p>
+                                            )
+                                        } else if (event.action === 'buy') {
+                                            return (
+                                                <p>
+                                                    Bought {event.quantity}
+                                                    shares of {event.assetName}
+                                                    at {event.assetPrice}/share
+                                                </p>
+                                            )
+                                        } else if (event.action === 'sold') {
+                                            return (
+                                                <p>
+                                                    Sold {event.quantity} shares
+                                                    of {event.assetName}
+                                                    at {event.assetPrice}/share
+                                                </p>
+                                            )
+                                        } else {
+                                            return <p>{event.action}</p>
+                                        }
+                                    },
+                                )
                             )}
                         </div>
                     </div>
