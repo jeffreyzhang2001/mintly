@@ -51,7 +51,9 @@ const Profile = ({ uid }) => {
                             <div className="usertext">
                                 <h1 className="name">{displayName}</h1>
                                 {totalBalance ? (
-                                    <h2 className="total-balance">{`Total Balance: $${totalBalance}`}</h2>
+                                    <h2 className="total-balance">{`Total Balance: $${totalBalance.toFixed(
+                                        2,
+                                    )}`}</h2>
                                 ) : (
                                     <h2>
                                         <Skeleton />
@@ -127,16 +129,24 @@ const Profile = ({ uid }) => {
                                                     <h2>
                                                         Total Value:{' '}
                                                         <span>
-                                                            ${balance + equity}
+                                                            $
+                                                            {(
+                                                                balance + equity
+                                                            ).toFixed(2)}
                                                         </span>
                                                     </h2>
                                                     <h2>
                                                         Total Equity:{' '}
-                                                        <span>${equity}</span>
+                                                        <span>
+                                                            ${equity.toFixed(2)}
+                                                        </span>
                                                     </h2>
                                                     <h2>
                                                         Total Cash:{' '}
-                                                        <span>${balance}</span>
+                                                        <span>
+                                                            $
+                                                            {balance.toFixed(2)}
+                                                        </span>
                                                     </h2>
                                                 </div>
                                                 <div

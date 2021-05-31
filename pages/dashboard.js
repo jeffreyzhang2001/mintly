@@ -816,6 +816,17 @@ const Dashboard = ({ uid }) => {
                     height: 55vh;
                     overflow: auto;
                 }
+
+                .view-container::-webkit-scrollbar {
+                    background: white;
+                    width: 0.4em;
+                    border-radius: 15px;
+                }
+                .view-container::-webkit-scrollbar-thumb {
+                    background-color: gray;
+                    border-radius: 15px;
+                }
+
                 :global(.ticker-autocomplete) {
                     margin-top: 10px;
                 }
@@ -838,6 +849,7 @@ const Dashboard = ({ uid }) => {
                 .outer-card-container {
                     margin-top: 20px;
                     height: 18%;
+                    width: 98%;
                     border-radius: 15px;
                 }
                 .inner-card-container {
