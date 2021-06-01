@@ -81,7 +81,11 @@ export default async (req, res) => {
         )
     })
 
-    await Promise.all([quotePromise, companyNewsPromise])
+    await Promise.all([
+        quotePromise,
+        recommendationTrendsPromise,
+        companyNewsPromise,
+    ])
     if (promiseError) {
         return res.status(404).json({
             status: 404,
