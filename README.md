@@ -1,4 +1,4 @@
-# [<img src="https://twemoji.maxcdn.com/v/13.0.1/72x72/1f343.png" alt="" width="50px" height="50px">](https://mintlyapp.com) Mintly - [mintlyapp.com](https://mintlyapp.com)
+# [<img src="https://twemoji.maxcdn.com/v/13.0.1/72x72/1f343.png" alt="" width="50px" height="50px">](https://mintly.vercel.app/) Mintly - [mintly.vercel.app](https://mintly.vercel.app/)
 
 Mintly is a free paper-trading platform with unlimited portfolios and an endless bankroll.  
 Buy stocks, trade options, and best of all - inject money into your account whenever you want.  
